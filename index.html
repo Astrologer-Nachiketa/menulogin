@@ -2498,14 +2498,11 @@
         checkLoginStatus();
         
         // Initialize Google Sign-In when script loads
-        if (typeof google !== 'undefined') {
-            initGoogleSignIn();
-        } else {
-            // Wait for Google SDK to load
-            window.onload = function() {
-                setTimeout(initGoogleSignIn, 500);
-            };
-        }
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                initGoogleSignIn();
+            }, 500);
+        });
     });
     </script>
 </body>
