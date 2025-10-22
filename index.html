@@ -2499,6 +2499,7 @@
             lastTouchEnd = now;
         }, false);
         
+        
         // Initialize app
         checkLoginStatus();
         
@@ -2508,8 +2509,10 @@
                 initGoogleSignIn();
             }, 500);
         });
-    });
-    })();
+        
+    }); // End of DOMContentLoaded
+    
+    })(); // End of async IIFE
     </script>
 </body>
 </html>
