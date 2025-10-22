@@ -2135,7 +2135,7 @@
                 discountCodes = freshDiscountCodes;
                 
                 const statusCheck = checkOutletStatus();
-                const locationCheck = await checkUserLocation();
+                let locationCheck = await checkUserLocation();
                 
                 // If GPS check is 'yes', get fresh location at confirmation time
                 if (freshConfig['gps check'] && freshConfig['gps check'].toLowerCase() === 'yes') {
