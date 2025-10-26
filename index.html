@@ -468,7 +468,7 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // ⚠️ IMPORTANT: Replace with your Apps Script Web App URL
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx1VCYk2Hh0b6uVmPt0EffkcMprkUOxvJzZYL_7m-SNL4MD04h6BLQSg_wqol1wT9p7/exec';
+        const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
         
         let GST_RATE = 0.05;
         let deviceId = null;
@@ -648,16 +648,17 @@
             saveCustomerDetailsLocal();
             
             try {
+                // Use URLSearchParams for CORS-safe submission
+                const formData = new URLSearchParams();
+                formData.append('action', 'saveCustomerDetails');
+                formData.append('deviceId', deviceId);
+                formData.append('name', name);
+                formData.append('phone', phone);
+                formData.append('address', address);
+                
                 await fetch(APPS_SCRIPT_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'saveCustomerDetails',
-                        deviceId: deviceId,
-                        name: name,
-                        phone: phone,
-                        address: address
-                    })
+                    body: formData
                 });
             } catch (error) {
                 console.error('Error saving customer details:', error);
@@ -702,31 +703,32 @@
                     subtotal: item.subtotal
                 }));
                 
-                const orderData = {
-                    action: 'submitOrder',
-                    deviceId: deviceId,
-                    customerName: customerDetails.name,
-                    customerPhone: customerDetails.phone,
-                    customerAddress: customerDetails.address,
-                    tableNumber: tableNumber || '',
-                    orderItems: orderItems,
-                    subtotal: subtotal,
-                    discount: discount,
-                    gst: gst,
-                    grandTotal: grandTotal,
-                    generalInstructions: generalInstructions,
-                    locationLat: userLocation ? userLocation.lat : '',
-                    locationLng: userLocation ? userLocation.lng : '',
-                    distanceKm: userLocation && config.outletLocation ? 
-                        calculateDistance(userLocation.lat, userLocation.lng, config.outletLocation.lat, config.outletLocation.lng).toFixed(2) : ''
-                };
+                // Use URLSearchParams for CORS-safe form submission
+                const formData = new URLSearchParams();
+                formData.append('action', 'submitOrder');
+                formData.append('deviceId', deviceId);
+                formData.append('customerName', customerDetails.name);
+                formData.append('customerPhone', customerDetails.phone);
+                formData.append('customerAddress', customerDetails.address);
+                formData.append('tableNumber', tableNumber || '');
+                formData.append('orderItems', JSON.stringify(orderItems));
+                formData.append('subtotal', subtotal);
+                formData.append('discount', discount);
+                formData.append('gst', gst);
+                formData.append('grandTotal', grandTotal);
+                formData.append('generalInstructions', generalInstructions);
+                formData.append('locationLat', userLocation ? userLocation.lat : '');
+                formData.append('locationLng', userLocation ? userLocation.lng : '');
+                formData.append('distanceKm', userLocation && config.outletLocation ? 
+                    calculateDistance(userLocation.lat, userLocation.lng, config.outletLocation.lat, config.outletLocation.lng).toFixed(2) : '');
                 
-                console.log('Submitting order:', orderData);
+                console.log('Submitting order via form data...');
                 
+                // CORS-safe POST request - do NOT set Content-Type header
                 const response = await fetch(APPS_SCRIPT_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(orderData)
+                    body: formData
+                    // Browser automatically sets Content-Type: application/x-www-form-urlencoded
                 });
                 
                 const result = await response.json();
