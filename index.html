@@ -5,15 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#d9534f">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23d9534f' width='100' height='100'/><text y='75' font-size='75' fill='white' text-anchor='middle' x='50'>🍽️</text></svg>">
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <title>Order Menu</title>
     <style>
-        /* --- Basic Setup & Fonts --- */
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-
         :root {
             --primary-color: #d9534f;
             --secondary-color: #f7f7f7;
@@ -23,74 +17,75 @@
             --non-veg-color: #b30000;
             --egg-color: #e69500;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #000;
             color: var(--text-color);
-            margin: 0;
-            padding: 0;
             width: 100vw;
             height: 100vh;
             overflow: hidden;
             position: fixed;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
-
         .phone-wrapper {
             width: 100%;
             height: 100%;
-            max-width: 100vw;
-            max-height: 100vh;
-            border: none;
-            border-radius: 0;
-            box-shadow: none;
+            background: #fff;
             overflow: hidden;
             position: relative;
-            background: #fff;
         }
-
-        /* --- Main Layout --- */
-        .app-container {
-            display: flex;
-            height: 100%;
-            flex-direction: column;
-        }
-        
+        .app-container { display: flex; height: 100%; flex-direction: column; }
         .header {
             padding: max(env(safe-area-inset-top), 15px) 20px 15px 20px;
             background: #fff;
             border-bottom: 1px solid var(--border-color);
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             position: sticky;
             top: 0;
             z-index: 10;
         }
-        
         .header h1 {
             font-size: clamp(1.2em, 4vw, 1.5em);
             color: var(--primary-color);
+            flex: 1;
+            text-align: center;
         }
         #table-number-display {
             font-size: clamp(0.75em, 3vw, 0.8em);
             color: #555;
             font-weight: 500;
         }
-
+        .orders-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            min-height: 36px;
+        }
+        .badge {
+            background: white;
+            color: var(--primary-color);
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.75em;
+            font-weight: 700;
+            min-width: 20px;
+        }
         .search-container {
             padding: 0 20px 10px 20px;
             background: #fff;
             border-bottom: 1px solid var(--border-color);
             position: relative;
         }
-        
         .search-box {
             width: 100%;
             padding: 12px 45px 12px 15px;
@@ -98,18 +93,7 @@
             border-radius: 25px;
             font-size: clamp(0.9em, 3vw, 0.95em);
             font-family: 'Roboto', sans-serif;
-            transition: border-color 0.2s;
         }
-        
-        .search-box:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-        
-        .search-box::placeholder {
-            color: #999;
-        }
-        
         .clear-search {
             position: absolute;
             right: 35px;
@@ -125,46 +109,17 @@
             align-items: center;
             justify-content: center;
             font-size: 1.2em;
-            color: #666;
-            -webkit-tap-highlight-color: transparent;
         }
-        
-        .clear-search.visible {
-            display: flex;
-        }
-        
-        .clear-search:active {
-            transform: translateY(-50%) scale(0.9);
-        }
-
-        .loading-message {
-            padding: 40px 20px;
-            text-align: center;
-            color: #666;
-            font-size: clamp(0.95em, 3.5vw, 1em);
-        }
-
-        .menu-container {
-            display: flex;
-            flex-grow: 1;
-            overflow: hidden;
-        }
-
+        .clear-search.visible { display: flex; }
+        .menu-container { display: flex; flex-grow: 1; overflow: hidden; }
         .category-list {
             width: clamp(100px, 25vw, 120px);
             background-color: var(--secondary-color);
             overflow-y: auto;
-            overflow-x: hidden;
             border-right: 1px solid var(--border-color);
             padding-top: 10px;
-            flex-shrink: 0;
-            -webkit-overflow-scrolling: touch;
         }
-
-        .category-list ul {
-            list-style-type: none;
-        }
-
+        .category-list ul { list-style-type: none; }
         .category-list li {
             padding: 15px 10px;
             cursor: pointer;
@@ -172,30 +127,19 @@
             font-size: clamp(0.8em, 3vw, 0.9em);
             color: #555;
             border-left: 4px solid transparent;
-            transition: all 0.2s ease-in-out;
-            -webkit-tap-highlight-color: transparent;
-            word-wrap: break-word;
         }
-
-        .category-list li:hover {
-            background-color: #e9e9e9;
-        }
-
         .category-list li.active {
             background-color: #fff;
             color: var(--primary-color);
             font-weight: 700;
             border-left-color: var(--primary-color);
         }
-
         .item-list {
             flex-grow: 1;
             padding: 10px;
             overflow-y: auto;
             padding-bottom: max(env(safe-area-inset-bottom), 100px);
-            -webkit-overflow-scrolling: touch;
         }
-
         .item-card {
             display: flex;
             align-items: center;
@@ -205,50 +149,15 @@
             padding: 15px;
             margin-bottom: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            transition: box-shadow 0.2s ease;
         }
-
-        .item-card:active {
-            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-        }
-        
-        .item-details {
-            flex-grow: 1;
-        }
-
+        .item-details { flex-grow: 1; }
         .item-name {
             display: flex;
             align-items: center;
             font-weight: 700;
             font-size: clamp(0.95em, 3.5vw, 1em);
             margin-bottom: 5px;
-            line-height: 1.3;
-            position: relative;
         }
-        
-        .info-icon {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 0.75em;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: 8px;
-            flex-shrink: 0;
-            -webkit-tap-highlight-color: transparent;
-            transition: transform 0.2s;
-        }
-        
-        .info-icon:active {
-            transform: scale(0.9);
-        }
-        
         .attribute-icon {
             width: 14px;
             height: 14px;
@@ -258,7 +167,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
         }
         .attribute-icon::after {
             content: '';
@@ -267,47 +175,31 @@
             border-radius: 50%;
             background-color: currentColor;
         }
-
         .attribute-icon.veg { border-color: var(--veg-color); color: var(--veg-color); }
         .attribute-icon.non-veg { border-color: var(--non-veg-color); color: var(--non-veg-color); }
         .attribute-icon.egg { border-color: var(--egg-color); color: var(--egg-color); }
-
         .item-price {
             font-size: clamp(0.85em, 3vw, 0.9em);
             color: #666;
             font-weight: 500;
         }
-
-        .item-action-container {
-            min-width: 90px;
-            text-align: center;
-            margin-left: 10px;
-        }
-
-        .add-button, .item-quantity-control {
+        .item-action-container { min-width: 90px; text-align: center; margin-left: 10px; }
+        .add-button {
             background-color: #fff;
             color: var(--primary-color);
             border: 2px solid var(--primary-color);
             border-radius: 25px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-        }
-        
-        .add-button { 
             padding: 10px 22px;
             font-size: clamp(0.85em, 3vw, 0.9em);
             min-height: 44px;
         }
-        .add-button:active { 
-            background-color: var(--primary-color); 
-            color: #fff;
-            transform: scale(0.95);
-        }
-
         .item-quantity-control {
+            background-color: #fff;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            border-radius: 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -323,22 +215,7 @@
             cursor: pointer;
             min-width: 35px;
             min-height: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
         }
-        .item-quantity-control button:active {
-            transform: scale(0.9);
-        }
-        .item-quantity-control span {
-            min-width: 30px;
-            text-align: center;
-            font-size: 1em;
-        }
-
-        /* --- Cart Summary --- */
         .cart-summary {
             position: fixed;
             bottom: 0;
@@ -346,25 +223,16 @@
             width: 100%;
             background-color: var(--primary-color);
             color: white;
-            padding: 15px 20px max(env(safe-area-inset-bottom), 15px) 20px;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-weight: 500;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-            cursor: pointer;
             transform: translateY(100%);
-            transition: transform 0.3s ease-in-out;
+            transition: transform 0.3s;
             z-index: 50;
             box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
-            -webkit-tap-highlight-color: transparent;
         }
-        
-        .cart-summary.visible {
-            transform: translateY(0);
-        }
-        
+        .cart-summary.visible { transform: translateY(0); }
         #view-order-btn {
             background: #fff;
             color: var(--primary-color);
@@ -373,24 +241,8 @@
             border-radius: 25px;
             font-weight: 700;
             cursor: pointer;
-            animation: pulse 2s infinite;
-            font-size: clamp(0.9em, 3vw, 1em);
             min-height: 44px;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
         }
-
-        #view-order-btn:active {
-            transform: scale(0.95);
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        /* --- Modals --- */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -402,574 +254,137 @@
             justify-content: center;
             align-items: flex-end;
             z-index: 200;
-            backdrop-filter: blur(2px);
         }
-
-        .modal-overlay.visible {
-            display: flex;
-        }
-
+        .modal-overlay.visible { display: flex; }
         .modal {
             background: white;
             border-radius: 20px 20px 0 0;
             width: 100%;
-            max-width: 100vw;
             max-height: 90vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            animation: slideUp 0.3s ease-out;
         }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(100%);
-            }
-            to {
-                transform: translateY(0);
-            }
-        }
-
         .modal-header {
-            padding: 20px 20px 15px 20px;
+            padding: 20px;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #fff;
-            position: sticky;
-            top: 0;
-            z-index: 10;
         }
-        .close-btn { 
-            font-size: 1.8rem; 
-            cursor: pointer; 
+        .close-btn {
+            font-size: 1.8rem;
+            cursor: pointer;
             color: #888;
             min-width: 44px;
             min-height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
-            -webkit-tap-highlight-color: transparent;
         }
-        .close-btn:active {
-            transform: scale(0.9);
-        }
-        
-        .modal-item-name { 
-            font-size: clamp(1.1em, 4vw, 1.2em); 
-            font-weight: 700;
-            line-height: 1.3;
-        }
-        .modal-item-price { 
-            font-size: clamp(0.95em, 3vw, 1em); 
-            color: #555; 
-        }
-
-        .modal-body { 
-            padding: 20px; 
-            overflow-y: auto; 
-            flex-grow: 1;
-            -webkit-overflow-scrolling: touch;
-        }
-        .addon-group { margin-bottom: 25px; }
-        .addon-group h4 { 
-            font-size: clamp(0.95em, 3.5vw, 1em); 
-            font-weight: 600; 
-            margin-bottom: 12px; 
-            border-bottom: 1px solid #eee; 
-            padding-bottom: 8px;
+        .modal-body { padding: 20px; overflow-y: auto; flex-grow: 1; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
             color: #333;
         }
-        .addon-item { 
-            display: flex; 
-            align-items: center; 
-            margin-bottom: 14px;
-            padding: 10px;
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
             border-radius: 8px;
-            transition: background 0.2s;
-        }
-        .addon-item:active {
-            background: #f5f5f5;
-        }
-        .addon-item input { 
-            margin-right: 12px;
-            min-width: 20px;
-            min-height: 20px;
-            cursor: pointer;
-        }
-        .addon-item label { 
-            flex-grow: 1;
-            font-size: clamp(0.9em, 3vw, 0.95em);
-            cursor: pointer;
-            line-height: 1.4;
-        }
-        .addon-item .price { 
-            font-weight: 600;
-            color: var(--primary-color);
-            font-size: clamp(0.9em, 3vw, 0.95em);
-        }
-        .instructions { 
-            width: 100%; 
-            padding: 12px; 
-            border-radius: 8px; 
-            border: 1.5px solid var(--border-color); 
-            margin-top: 10px; 
-            resize: vertical; 
-            min-height: 80px;
-            font-size: clamp(0.9em, 3vw, 0.95em);
+            font-size: 1em;
             font-family: 'Roboto', sans-serif;
         }
-
-        .modal-footer { 
-            padding: 15px 20px max(env(safe-area-inset-bottom), 15px) 20px; 
-            border-top: 1px solid var(--border-color); 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between;
-            background: #fff;
-            position: sticky;
-            bottom: 0;
-        }
-        .quantity-control { 
-            display: flex; 
-            align-items: center;
-            background: var(--secondary-color);
-            border-radius: 25px;
-            padding: 4px;
-        }
-        .quantity-btn { 
-            background: white;
-            border: none;
-            min-width: 40px;
-            min-height: 40px;
-            font-size: 1.3em;
-            cursor: pointer;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary-color);
-            font-weight: 700;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-        }
-        .quantity-btn:active {
-            transform: scale(0.9);
-            background: #f0f0f0;
-        }
-        .quantity-display { 
-            padding: 0 20px; 
-            font-weight: 700; 
-            font-size: clamp(1em, 4vw, 1.1em);
-            min-width: 50px;
-            text-align: center;
-        }
-        .add-to-cart-btn { 
-            background: var(--primary-color); 
-            color: white; 
-            border: none; 
-            padding: 12px 24px; 
-            border-radius: 25px; 
-            font-weight: 700; 
-            cursor: pointer;
-            font-size: clamp(0.9em, 3vw, 1em);
-            min-height: 48px;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-        }
-        .add-to-cart-btn:active {
-            transform: scale(0.95);
-            background: #c74943;
-        }
-        
-        /* --- Cart Modal Specific Styles --- */
-        #cart-modal-body { 
-            padding: 0;
-            -webkit-overflow-scrolling: touch;
-        }
-        .cart-item { 
-            padding: 18px 20px; 
-            border-bottom: 1px solid #eee; 
-        }
-        .cart-item:last-child { border-bottom: none; }
-        .cart-item-name { 
-            font-weight: 700; 
-            display: flex; 
-            align-items: center; 
-            margin-bottom: 8px;
-            font-size: clamp(0.95em, 3.5vw, 1em);
-            line-height: 1.3;
-        }
-        .cart-item-addons { 
-            font-size: clamp(0.8em, 2.8vw, 0.85em); 
-            color: #666; 
-            margin-left: 22px;
-            line-height: 1.5;
-        }
-        .cart-item-instructions { 
-            font-size: clamp(0.8em, 2.8vw, 0.85em); 
-            color: #d9534f; 
-            margin-left: 22px; 
-            font-style: italic;
-            line-height: 1.4;
-            margin-top: 5px;
-        }
-        .cart-item-footer { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-top: 12px; 
-        }
-        .cart-item-actions button { 
-            font-size: clamp(0.8em, 2.8vw, 0.85em); 
-            padding: 8px 14px; 
-            border: 1.5px solid; 
-            border-radius: 20px; 
-            cursor: pointer; 
-            background: white; 
-            margin-left: 8px;
-            font-weight: 600;
-            min-height: 36px;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-        }
-        .cart-item-actions button:active {
-            transform: scale(0.95);
-        }
-        .cart-edit-btn { 
-            color: #5bc0de; 
-            border-color: #5bc0de; 
-        }
-        .cart-edit-btn:active {
-            background: #e6f7fb;
-        }
-        .cart-remove-btn { 
-            color: #d9534f; 
-            border-color: #d9534f; 
-        }
-        .cart-remove-btn:active {
-            background: #fef2f2;
-        }
-        .cart-item-price { 
-            font-weight: 700;
-            font-size: clamp(0.95em, 3.5vw, 1em);
-            color: var(--primary-color);
-        }
-        #cart-modal-footer { 
-            justify-content: center; 
-        }
-        .totals-summary { 
-            padding: 18px 20px; 
-            border-top: 2px solid #eee;
-            background: #fafafa;
-        }
-        .totals-row { 
-            display: flex; 
-            justify-content: space-between; 
-            margin-bottom: 8px; 
-            font-size: clamp(0.9em, 3vw, 0.95em);
-        }
-        .totals-row.grand-total { 
-            font-weight: 700; 
-            font-size: clamp(1.05em, 4vw, 1.15em); 
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid #ddd;
-            color: var(--primary-color);
-        }
-
-        #send-whatsapp-btn {
-            background: #25D366;
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        .submit-btn {
+            background: var(--primary-color);
             color: white;
             border: none;
             padding: 14px 28px;
             border-radius: 30px;
             font-weight: 700;
             cursor: pointer;
-            font-size: clamp(0.95em, 3.5vw, 1.05em);
+            font-size: 1.05em;
+            width: 100%;
             min-height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
         }
-
-        #send-whatsapp-btn:active {
-            transform: scale(0.97);
-            background: #20ba5a;
-        }
-
-        /* Smooth scrolling */
-        * {
-            -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
-        }
-
-        /* Better input focus for accessibility */
-        input:focus, textarea:focus, button:focus {
-            outline: 2px solid var(--primary-color);
-            outline-offset: 2px;
-        }
-
-        /* Prevent text selection on buttons */
-        button {
-            -webkit-user-select: none;
-            user-select: none;
-        }
-        
-        /* Login Screen Styles */
-        .login-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            padding: 20px;
-        }
-        
-        .login-screen.hidden {
-            display: none;
-        }
-        
-        .login-box {
+        .submit-btn:disabled { background: #ccc; cursor: not-allowed; }
+        .order-status-card {
             background: white;
-            border-radius: 20px;
-            padding: 40px 30px;
-            max-width: 400px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            text-align: center;
-        }
-        
-        .login-logo {
-            font-size: 4em;
-            margin-bottom: 20px;
-        }
-        
-        .login-title {
-            font-size: 1.8em;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-        }
-        
-        .login-subtitle {
-            font-size: 1em;
-            color: #666;
-            margin-bottom: 30px;
-        }
-        
-        .google-signin-btn {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background: white;
-            border: 2px solid #ddd;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 1em;
-            font-weight: 600;
-            color: #333;
-            cursor: pointer;
-            transition: all 0.3s;
+            border-radius: 12px;
+            padding: 15px;
             margin-bottom: 15px;
+            border-left: 4px solid var(--primary-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
-        
-        .google-signin-btn:hover {
-            border-color: #4285f4;
-            box-shadow: 0 2px 8px rgba(66,133,244,0.2);
-        }
-        
-        .google-signin-btn img {
-            width: 20px;
-            height: 20px;
-        }
-        
-        .user-info {
-            position: absolute;
-            top: max(env(safe-area-inset-top), 15px);
-            right: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: white;
-            padding: 8px 12px;
-            border-radius: 25px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            z-index: 100;
-        }
-        
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        
-        .user-name {
-            font-size: 0.9em;
-            font-weight: 600;
-            color: #333;
-            max-width: 150px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        
-        .logout-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 15px;
-            font-size: 0.8em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .logout-btn:active {
-            transform: scale(0.95);
-        }
-        
-        /* Description Modal Styles */
-        .description-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            border-radius: 16px;
-            padding: 0;
-            max-width: 95%;
-            width: 95%;
-            max-height: 85vh;
-            overflow: hidden;
-            z-index: 250;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-            animation: fadeIn 0.2s ease-out;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translate(-50%, -48%);
-            }
-            to {
-                opacity: 1;
-                transform: translate(-50%, -50%);
-            }
-        }
-        
-        .description-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 240;
-            display: none;
-        }
-        
-        .description-modal-overlay.visible {
-            display: block;
-        }
-        
-        .description-header {
+        .order-status-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
-            border-bottom: 2px solid #eee;
-            flex-shrink: 0;
+            margin-bottom: 10px;
         }
-        
-        .description-title {
-            font-size: 1.1em;
+        .order-id { font-weight: 700; color: #333; }
+        .order-status {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        .order-status.pending { background: #fff3cd; color: #856404; }
+        .order-status.preparing { background: #cfe2ff; color: #084298; }
+        .order-status.ready {
+            background: #d1e7dd;
+            color: #0a3622;
+            animation: pulse-ready 1.5s infinite;
+        }
+        @keyframes pulse-ready {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .order-status.delivered { background: #e2e3e5; color: #41464b; }
+        .order-details { font-size: 0.9em; color: #666; line-height: 1.6; }
+        .order-total {
             font-weight: 700;
             color: var(--primary-color);
+            font-size: 1.1em;
+            margin-top: 8px;
         }
-        
-        .description-close {
-            background: none;
-            border: none;
-            font-size: 1.5em;
-            color: #888;
-            cursor: pointer;
-            min-width: 30px;
-            min-height: 30px;
+        .cart-item {
+            padding: 18px 20px;
+            border-bottom: 1px solid #eee;
         }
-        
-        .description-content {
-            color: #333;
-            line-height: 1.6;
-            font-size: 0.95em;
-            overflow-y: auto;
-            flex-grow: 1;
-            padding: 0;
+        .totals-summary {
+            padding: 18px 20px;
+            border-top: 2px solid #eee;
+            background: #fafafa;
         }
-        
-        .description-content img {
-            width: 100%;
-            display: block;
-            margin: 0;
+        .totals-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: clamp(0.9em, 3vw, 0.95em);
         }
-        
-        .description-content p {
-            padding: 20px;
-            margin: 0;
-        }
-        
-        .description-content > div {
-            margin: 0;
+        .totals-row.grand-total {
+            font-weight: 700;
+            font-size: clamp(1.05em, 4vw, 1.15em);
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #ddd;
+            color: var(--primary-color);
         }
     </style>
 </head>
 <body>
-
-    <div class="login-screen" id="login-screen">
-        <div class="login-box">
-            <div class="login-logo">🍽️</div>
-            <h1 class="login-title" id="login-brand-name">Our Menu</h1>
-            <p class="login-subtitle">Sign in to start ordering</p>
-            <div id="google-signin-button"></div>
-            <button class="google-signin-btn" id="manual-google-signin">
-                <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M19.6 10.23c0-.82-.1-1.42-.25-2.05H10v3.72h5.5c-.15.96-.74 2.31-2.04 3.22v2.45h3.16c1.89-1.73 2.98-4.3 2.98-7.34z" fill="#4285F4"/>
-                    <path d="M13.46 15.13c-.83.59-1.96 1-3.46 1-2.64 0-4.88-1.74-5.68-4.15H1.07v2.52C2.72 17.75 6.09 20 10 20c2.7 0 4.96-.89 6.62-2.42l-3.16-2.45z" fill="#34A853"/>
-                    <path d="M3.99 10c0-.69.12-1.35.32-1.97V5.51H1.07A9.973 9.973 0 000 10c0 1.61.39 3.14 1.07 4.49l3.24-2.52c-.2-.62-.32-1.28-.32-1.97z" fill="#FBBC05"/>
-                    <path d="M10 3.88c1.88 0 3.13.81 3.85 1.48l2.84-2.76C14.96.99 12.7 0 10 0 6.09 0 2.72 2.25 1.07 5.51l3.24 2.52C5.12 5.62 7.36 3.88 10 3.88z" fill="#EA4335"/>
-                </svg>
-                Sign in with Google
-            </button>
-            <p style="font-size: 0.85em; color: #999; margin-top: 20px;">By signing in, you agree to our Terms of Service</p>
-        </div>
-    </div>
-
     <div class="phone-wrapper">
-        <div class="user-info" id="user-info" style="display: none;">
-            <img class="user-avatar" id="user-avatar" src="" alt="User">
-            <span class="user-name" id="user-name"></span>
-            <button class="logout-btn" id="logout-btn">Logout</button>
-        </div>
-        
         <div class="app-container">
             <header class="header">
-                <h1>Our Menu <span id="table-number-display"></span></h1>
+                <h1><span id="brand-name">Our Menu</span> <span id="table-number-display"></span></h1>
+                <button class="orders-btn" id="my-orders-btn">
+                    📋 <span class="badge" id="orders-badge" style="display: none;">0</span>
+                </button>
             </header>
             <div class="search-container">
                 <input type="text" class="search-box" id="search-input" placeholder="Search for items...">
@@ -978,7 +393,7 @@
             <div class="menu-container">
                 <aside class="category-list"><ul id="category-list-ul"></ul></aside>
                 <main class="item-list" id="item-list-main">
-                    <div class="loading-message">Loading menu...</div>
+                    <div style="padding: 40px 20px; text-align: center; color: #666;">Loading menu...</div>
                 </main>
             </div>
             <div class="cart-summary" id="cart-summary-bar">
@@ -987,10 +402,46 @@
             </div>
         </div>
 
-        <div class="modal-overlay" id="customization-modal-overlay">
-            <div class="modal" id="customization-modal-content"></div>
+        <!-- Customer Details Modal -->
+        <div class="modal-overlay" id="customer-details-modal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3>Your Details</h3>
+                    <span class="close-btn" id="close-customer-modal">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <p style="margin-bottom: 20px; color: #666;">Please provide your details to place the order</p>
+                    <div class="form-group">
+                        <label for="customer-name">Name *</label>
+                        <input type="text" id="customer-name" placeholder="Enter your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customer-phone">Phone Number *</label>
+                        <input type="tel" id="customer-phone" placeholder="10-digit mobile number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customer-address">Delivery Address *</label>
+                        <textarea id="customer-address" placeholder="Enter your complete address" required></textarea>
+                    </div>
+                    <button class="submit-btn" id="save-customer-details">Continue to Place Order</button>
+                </div>
+            </div>
         </div>
-        
+
+        <!-- My Orders Modal -->
+        <div class="modal-overlay" id="my-orders-modal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3>My Orders</h3>
+                    <span class="close-btn" id="close-orders-modal">&times;</span>
+                </div>
+                <div class="modal-body" id="orders-list">
+                    <p style="text-align: center; color: #999;">Loading orders...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cart Modal -->
         <div class="modal-overlay" id="cart-modal-overlay">
             <div class="modal">
                 <div class="modal-header">
@@ -1001,155 +452,412 @@
                 <div class="totals-summary" id="cart-totals-summary"></div>
                 <div style="padding: 0 20px 15px 20px;">
                     <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-                        <input type="text" id="discount-code-input" placeholder="Discount Code" style="flex: 1; padding: 12px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 1em;">
-                        <button id="apply-discount-btn" style="background: var(--primary-color); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; min-width: 80px;">Apply</button>
+                        <input type="text" id="discount-code-input" placeholder="Discount Code" style="flex: 1; padding: 12px; border: 1.5px solid #ddd; border-radius: 8px;">
+                        <button id="apply-discount-btn" style="background: var(--primary-color); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 700; cursor: pointer;">Apply</button>
                     </div>
                     <div id="discount-message" style="font-size: 0.9em; margin-bottom: 10px; text-align: center;"></div>
-                    <textarea id="general-instructions" class="instructions" placeholder="Any general instructions? (e.g., less spicy)"></textarea>
+                    <textarea id="general-instructions" placeholder="Any general instructions? (e.g., less spicy)" style="width: 100%; padding: 12px; border-radius: 8px; border: 1.5px solid var(--border-color); resize: vertical; min-height: 80px; font-family: 'Roboto', sans-serif;"></textarea>
                 </div>
-                <div class="modal-footer" id="cart-modal-footer">
-                    <button id="send-whatsapp-btn">
-                        <span>📱</span> Send Order on WhatsApp
-                    </button>
-                    <div id="final-check-status" style="display: none; text-align: center; font-size: 0.9em; margin-top: 10px; color: #666;">Verifying outlet status...</div>
+                <div style="padding: 15px 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: center;">
+                    <button class="submit-btn" id="place-order-btn">Place Order</button>
                 </div>
-            </div>
-        </div>
-        
-        <div class="modal-overlay" id="confirmation-modal-overlay">
-            <div class="modal">
-                <div class="modal-header">
-                    <h3>⚠️ Confirm Your Order</h3>
-                    <span class="close-btn" id="close-confirmation-modal">&times;</span>
-                </div>
-                <div class="modal-body" id="confirmation-modal-body" style="padding: 20px;">
-                    <div id="confirmation-loading" style="text-align: center; padding: 40px 20px;">
-                        <div style="font-size: 3em; margin-bottom: 15px;">⏳</div>
-                        <p style="color: #666; font-size: 1.1em;">Verifying order details...</p>
-                        <p style="color: #999; font-size: 0.9em; margin-top: 10px;">Checking outlet status, location, and discount codes</p>
-                    </div>
-                    <div id="confirmation-content" style="display: none;"></div>
-                </div>
-                <div class="modal-footer" style="justify-content: center; padding: 20px;">
-                    <button id="confirm-send-btn" style="display: none; background: #25D366; color: white; border: none; padding: 14px 32px; border-radius: 30px; font-weight: 700; cursor: pointer; font-size: 1.05em; min-height: 52px;">
-                        <span>✓</span> Confirm & Send Order
-                    </button>
-                    <button id="cancel-order-btn" style="display: none; background: #d9534f; color: white; border: none; padding: 14px 32px; border-radius: 30px; font-weight: 700; cursor: pointer; font-size: 1.05em; min-height: 52px; margin-left: 10px;">
-                        <span>✗</span> Cancel
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="description-modal-overlay" id="description-modal-overlay">
-            <div class="description-modal" id="description-modal">
-                <div class="description-header">
-                    <div class="description-title" id="description-title"></div>
-                    <button class="description-close" id="description-close">&times;</button>
-                </div>
-                <div class="description-content" id="description-content"></div>
             </div>
         </div>
     </div>
 
     <script>
-    (async function() {
-    document.addEventListener('DOMContentLoaded', async () => {
-
-        let GST_RATE = 0.05; // Default 5% GST, will be updated from config
+    document.addEventListener('DOMContentLoaded', () => {
+        // ⚠️ IMPORTANT: Replace with your Apps Script Web App URL
+        const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
         
-        // Google Sign-In Configuration
-        const GOOGLE_CLIENT_ID = '722105332039-k56b67vbqcvr8lm62141i84cq58kmdvh.apps.googleusercontent.com';
-        let currentUser = null;
+        let GST_RATE = 0.05;
+        let deviceId = null;
+        let customerDetails = null;
+        let pendingOrderSubmission = false;
 
-        // URLs for your data
         const MENU_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlM6BGIWdct_szKaONKItArAjOzdEgw-780Qha42rhQNY4_xZ15x8VxzRzzEhlUz8CDGsSY4wbjrip/pub?gid=0&single=true&output=csv';
         const ADDONS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlM6BGIWdct_szKaONKItArAjOzdEgw-780Qha42rhQNY4_xZ15x8VxzRzzEhlUz8CDGsSY4wbjrip/pub?gid=68309898&single=true&output=csv';
         const CONFIG_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlM6BGIWdct_szKaONKItArAjOzdEgw-780Qha42rhQNY4_xZ15x8VxzRzzEhlUz8CDGsSY4wbjrip/pub?gid=864388739&single=true&output=csv';
         const DISCOUNT_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlM6BGIWdct_szKaONKItArAjOzdEgw-780Qha42rhQNY4_xZ15x8VxzRzzEhlUz8CDGsSY4wbjrip/pub?gid=278622700&single=true&output=csv';
 
         let menuItems = [];
-        let addons = [];
         let config = {};
         let discountCodes = {};
         let cart = [];
-        let currentItemForModal = null;
-        let editingCartItemIndex = null;
         let activeCategory = null;
         let tableNumber = null;
         let appliedDiscount = null;
         let userLocation = null;
-        let outletOpen = true;
-        let outletClosedReason = null;
         let searchQuery = '';
         let brandName = 'Our Menu';
         let whatsappNumber = '7011847629';
-        
-        const categoryListUl = document.getElementById('category-list-ul');
-        const itemListMain = document.getElementById('item-list-main');
-        const cartSummaryBar = document.getElementById('cart-summary-bar');
-        const cartItemCountSpan = document.getElementById('cart-item-count');
-        const cartTotalPriceSpan = document.getElementById('cart-total-price');
-        const searchInput = document.getElementById('search-input');
-        const clearSearchBtn = document.getElementById('clear-search');
-        
-        const custModalOverlay = document.getElementById('customization-modal-overlay');
-        const custModalContent = document.getElementById('customization-modal-content');
-        
-        const cartModalOverlay = document.getElementById('cart-modal-overlay');
-        const cartModalBody = document.getElementById('cart-modal-body');
-        const cartTotalsSummary = document.getElementById('cart-totals-summary');
-        const closeCartModalBtn = document.getElementById('close-cart-modal');
-        const sendWhatsappBtn = document.getElementById('send-whatsapp-btn');
-        const viewOrderBtn = document.getElementById('view-order-btn');
-        
-        const confirmationModalOverlay = document.getElementById('confirmation-modal-overlay');
-        const confirmationModalBody = document.getElementById('confirmation-modal-body');
-        const closeConfirmationModalBtn = document.getElementById('close-confirmation-modal');
-        
-        const descriptionModalOverlay = document.getElementById('description-modal-overlay');
-        const descriptionModal = document.getElementById('description-modal');
-        const descriptionTitle = document.getElementById('description-title');
-        const descriptionContent = document.getElementById('description-content');
-        const descriptionClose = document.getElementById('description-close');
-        
-        const loginScreen = document.getElementById('login-screen');
-        const loginBrandName = document.getElementById('login-brand-name');
-        const userInfo = document.getElementById('user-info');
-        const userAvatar = document.getElementById('user-avatar');
-        const userName = document.getElementById('user-name');
-        const logoutBtn = document.getElementById('logout-btn');
-        const manualGoogleSignin = document.getElementById('manual-google-signin');
+        let orderCheckInterval = null;
 
-        // Check if user is already logged in
+        // Device ID Management
+        function getDeviceId() {
+            let id = localStorage.getItem('deviceId');
+            if (!id) {
+                id = 'DEV_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('deviceId', id);
+            }
+            return id;
+        }
+
+        function loadCustomerDetails() {
+            const saved = localStorage.getItem('customerDetails');
+            if (saved) {
+                try {
+                    customerDetails = JSON.parse(saved);
+                    console.log('✓ Loaded customer details from localStorage');
+                } catch (e) {
+                    console.error('Error loading customer details:', e);
+                }
+            }
+        }
+
+        function saveCustomerDetailsLocal() {
+            if (customerDetails) {
+                localStorage.setItem('customerDetails', JSON.stringify(customerDetails));
+            }
+        }
+
+        async function fetchCustomerDetails() {
+            try {
+                const response = await fetch(`${APPS_SCRIPT_URL}?action=getCustomerDetails&deviceId=${deviceId}`);
+                const data = await response.json();
+                if (data.status === 'success' && data.customer) {
+                    customerDetails = data.customer;
+                    saveCustomerDetailsLocal();
+                    console.log('✓ Fetched customer details from server');
+                }
+            } catch (error) {
+                console.error('Error fetching customer details:', error);
+            }
+        }
+
+        async function checkOrderStatus() {
+            try {
+                const response = await fetch(`${APPS_SCRIPT_URL}?action=checkOrderStatus&deviceId=${deviceId}`);
+                const data = await response.json();
+                if (data.status === 'success') {
+                    updateOrdersBadge(data.orders);
+                    return data.orders;
+                }
+            } catch (error) {
+                console.error('Error checking order status:', error);
+            }
+            return [];
+        }
+
+        function updateOrdersBadge(orders) {
+            const badge = document.getElementById('orders-badge');
+            const activeOrders = orders.filter(o => 
+                o.status === 'Pending' || o.status === 'Preparing' || o.status === 'Ready'
+            );
+            if (activeOrders.length > 0) {
+                badge.textContent = activeOrders.length;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        async function showMyOrders() {
+            document.getElementById('my-orders-modal').classList.add('visible');
+            document.getElementById('orders-list').innerHTML = '<p style="text-align: center; color: #999;">Loading orders...</p>';
+            
+            const orders = await checkOrderStatus();
+            const ordersList = document.getElementById('orders-list');
+            ordersList.innerHTML = '';
+            
+            if (orders.length === 0) {
+                ordersList.innerHTML = '<p style="text-align: center; color: #999; padding: 40px 20px;">No orders yet</p>';
+                return;
+            }
+            
+            orders.forEach(order => {
+                const orderCard = document.createElement('div');
+                orderCard.className = 'order-status-card';
+                const statusClass = order.status.toLowerCase();
+                const statusEmoji = {
+                    'pending': '⏳',
+                    'preparing': '👨‍🍳',
+                    'ready': '✅',
+                    'delivered': '📦'
+                }[statusClass] || '📋';
+                
+                const formattedDate = new Date(order.timestamp).toLocaleString('en-IN', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                orderCard.innerHTML = `
+                    <div class="order-status-header">
+                        <div class="order-id">${order.orderId}</div>
+                        <div class="order-status ${statusClass}">${statusEmoji} ${order.status}</div>
+                    </div>
+                    <div class="order-details">
+                        <div>Date: ${formattedDate}</div>
+                        ${order.tableNumber ? `<div>Table: ${order.tableNumber}</div>` : ''}
+                        <div class="order-total">Total: ₹${order.grandTotal.toFixed(2)}</div>
+                    </div>
+                `;
+                ordersList.appendChild(orderCard);
+            });
+        }
+
+        function startOrderStatusRefresh() {
+            if (orderCheckInterval) clearInterval(orderCheckInterval);
+            checkOrderStatus();
+            orderCheckInterval = setInterval(() => {
+                checkOrderStatus();
+                if (document.getElementById('my-orders-modal').classList.contains('visible')) {
+                    showMyOrders();
+                }
+            }, 10000); // Check every 10 seconds
+        }
+
+        function showCustomerDetailsModal() {
+            const modal = document.getElementById('customer-details-modal');
+            modal.classList.add('visible');
+            if (customerDetails) {
+                document.getElementById('customer-name').value = customerDetails.name || '';
+                document.getElementById('customer-phone').value = customerDetails.phone || '';
+                document.getElementById('customer-address').value = customerDetails.address || '';
+            }
+        }
+
+        document.getElementById('save-customer-details').addEventListener('click', async () => {
+            const name = document.getElementById('customer-name').value.trim();
+            const phone = document.getElementById('customer-phone').value.trim();
+            const address = document.getElementById('customer-address').value.trim();
+            
+            if (!name || !phone || !address) {
+                alert('Please fill all required fields');
+                return;
+            }
+            if (!/^\d{10}$/.test(phone)) {
+                alert('Please enter a valid 10-digit phone number');
+                return;
+            }
+            
+            customerDetails = { name, phone, address };
+            saveCustomerDetailsLocal();
+            
+            try {
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'saveCustomerDetails',
+                        deviceId: deviceId,
+                        name: name,
+                        phone: phone,
+                        address: address
+                    })
+                });
+            } catch (error) {
+                console.error('Error saving customer details:', error);
+            }
+            
+            document.getElementById('customer-details-modal').classList.remove('visible');
+            if (pendingOrderSubmission) {
+                pendingOrderSubmission = false;
+                submitOrderToBackend();
+            }
+        });
+
+        document.getElementById('place-order-btn').addEventListener('click', () => {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            if (!customerDetails || !customerDetails.name || !customerDetails.phone || !customerDetails.address) {
+                pendingOrderSubmission = true;
+                document.getElementById('cart-modal-overlay').classList.remove('visible');
+                showCustomerDetailsModal();
+            } else {
+                submitOrderToBackend();
+            }
+        });
+
+        async function submitOrderToBackend() {
+            const placeOrderBtn = document.getElementById('place-order-btn');
+            placeOrderBtn.disabled = true;
+            placeOrderBtn.textContent = 'Submitting Order...';
+            
+            try {
+                const { subtotal, discount, gst, grandTotal } = calculateTotals();
+                const generalInstructions = document.getElementById('general-instructions').value.trim();
+                
+                const orderItems = cart.map(item => ({
+                    name: item.Name,
+                    quantity: item.quantity,
+                    price: item.Price,
+                    addons: item.selectedAddons || [],
+                    instructions: item.instructions || '',
+                    subtotal: item.subtotal
+                }));
+                
+                const orderData = {
+                    action: 'submitOrder',
+                    deviceId: deviceId,
+                    customerName: customerDetails.name,
+                    customerPhone: customerDetails.phone,
+                    customerAddress: customerDetails.address,
+                    tableNumber: tableNumber || '',
+                    orderItems: orderItems,
+                    subtotal: subtotal,
+                    discount: discount,
+                    gst: gst,
+                    grandTotal: grandTotal,
+                    generalInstructions: generalInstructions,
+                    locationLat: userLocation ? userLocation.lat : '',
+                    locationLng: userLocation ? userLocation.lng : '',
+                    distanceKm: userLocation && config.outletLocation ? 
+                        calculateDistance(userLocation.lat, userLocation.lng, config.outletLocation.lat, config.outletLocation.lng).toFixed(2) : ''
+                };
+                
+                console.log('Submitting order:', orderData);
+                
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+                
+                const result = await response.json();
+                console.log('Order submission result:', result);
+                
+                if (result.status === 'success') {
+                    alert(`✅ Order Placed Successfully!\n\nOrder ID: ${result.orderId}\n\nYou can track your order in "My Orders"`);
+                    
+                    // Send WhatsApp notification
+                    const message = generateWhatsAppMessage(result.orderId);
+                    window.open(`https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${message}`, '_blank');
+                    
+                    // Clear cart
+                    cart = [];
+                    appliedDiscount = null;
+                    document.getElementById('general-instructions').value = '';
+                    document.getElementById('discount-code-input').value = '';
+                    document.getElementById('discount-message').textContent = '';
+                    updateCartSummary();
+                    renderItems(activeCategory);
+                    
+                    document.getElementById('cart-modal-overlay').classList.remove('visible');
+                    checkOrderStatus();
+                } else {
+                    alert('❌ Error placing order: ' + (result.message || 'Please try again'));
+                }
+            } catch (error) {
+                console.error('Error submitting order:', error);
+                alert('❌ Error placing order. Please check your connection and try again.');
+            } finally {
+                placeOrderBtn.disabled = false;
+                placeOrderBtn.textContent = 'Place Order';
+            }
+        }
+
+        function generateWhatsAppMessage(orderId) {
+            let message = `*New Order - ${orderId}*\n\n`;
+            
+            if (customerDetails) {
+                message += `*Customer Details:*\n`;
+                message += `Name: ${customerDetails.name}\n`;
+                message += `Phone: ${customerDetails.phone}\n`;
+                message += `Address: ${customerDetails.address}\n\n`;
+            }
+            
+            if (tableNumber) {
+                message += `*Table: ${tableNumber}*\n\n`;
+            }
+            
+            message += `*Order Items:*\n`;
+            cart.forEach((item) => {
+                message += `${item.quantity}x ${item.Name} - ₹${item.subtotal.toFixed(2)}\n`;
+                if (item.selectedAddons && item.selectedAddons.length > 0) {
+                    item.selectedAddons.forEach(addon => {
+                        message += `  - _${addon.name}_\n`;
+                    });
+                }
+                if (item.instructions && item.instructions.trim()) {
+                    message += `  > _${item.instructions.trim()}_\n`;
+                }
+            });
+
+            const { subtotal, discount, gst, grandTotal } = calculateTotals();
+            const gstPercent = (GST_RATE * 100).toFixed(0);
+            
+            message += `\n-----------------------------------\n`;
+            message += `*Subtotal:* ₹${subtotal.toFixed(2)}\n`;
+            if (discount > 0) {
+                message += `*Discount (${appliedDiscount}):* -₹${discount.toFixed(2)}\n`;
+            }
+            message += `*GST (${gstPercent}%):* ₹${gst.toFixed(2)}\n`;
+            message += `*Grand Total: ₹${grandTotal.toFixed(2)}*\n`;
+            message += `-----------------------------------\n`;
+
+            const generalInstructions = document.getElementById('general-instructions').value.trim();
+            if (generalInstructions) {
+                message += `\n*General Instructions:*\n_${generalInstructions}_\n`;
+            }
+            
+            if (userLocation && config.outletLocation) {
+                const distance = calculateDistance(
+                    userLocation.lat, userLocation.lng,
+                    config.outletLocation.lat, config.outletLocation.lng
+                );
+                message += `\n📍 *Location:* ${distance.toFixed(2)} km away\n`;
+                message += `https://www.google.com/maps/?q=${userLocation.lat},${userLocation.lng}\n`;
+            }
+            
+            return encodeURIComponent(message);
+        }
+
+        // Event listeners
+        document.getElementById('my-orders-btn').addEventListener('click', showMyOrders);
+        document.getElementById('close-orders-modal').addEventListener('click', () => {
+            document.getElementById('my-orders-modal').classList.remove('visible');
+        });
+        document.getElementById('close-customer-modal').addEventListener('click', () => {
+            document.getElementById('customer-details-modal').classList.remove('visible');
+            pendingOrderSubmission = false;
+        });
+        document.getElementById('close-cart-modal').addEventListener('click', () => {
+            document.getElementById('cart-modal-overlay').classList.remove('visible');
+        });
+        document.getElementById('view-order-btn').addEventListener('click', () => {
+            renderCartModal();
+            document.getElementById('cart-modal-overlay').classList.add('visible');
+        });
+
+        // CSV Parsing
+        async function fetchAndParseCSV(url) {
             try {
                 const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const csvText = await response.text();
-                
                 const lines = csvText.trim().split('\n');
                 const headers = lines.shift().split(',').map(h => h.trim());
-                
                 return lines.map(line => {
                     const values = line.split(',');
                     const item = {};
-                    
                     headers.forEach((header, i) => {
                         let value = values[i] ? values[i].trim() : '';
-                        
                         if (header === 'Price' || header === 'Addon_Item_Price') {
-                            item[header] = parseInt(value, 10) || 0; 
+                            item[header] = parseInt(value, 10) || 0;
                         } else {
                             item[header] = value;
                         }
                     });
                     return item;
                 });
-
             } catch (error) {
-                console.error("Error fetching or parsing CSV:", error);
+                console.error("Error fetching CSV:", error);
                 return [];
             }
         }
@@ -1158,100 +866,51 @@
             try {
                 const response = await fetch(CONFIG_CSV_URL);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                
                 const csvText = await response.text();
                 const lines = csvText.trim().split('\n');
-                
-                console.log('Config CSV raw text:', csvText);
-                console.log('Config CSV lines:', lines);
-                
                 const configObj = {};
                 
-                // Skip header line
                 for (let i = 1; i < lines.length; i++) {
                     const line = lines[i];
-                    
-                    // Parse CSV line properly handling quoted values
-                    let key = '';
-                    let value = '';
-                    let inQuotes = false;
-                    let currentField = '';
-                    let fieldIndex = 0;
+                    let key = '', value = '', inQuotes = false, currentField = '', fieldIndex = 0;
                     
                     for (let j = 0; j < line.length; j++) {
                         const char = line[j];
-                        
                         if (char === '"') {
                             inQuotes = !inQuotes;
                         } else if (char === ',' && !inQuotes) {
-                            if (fieldIndex === 0) {
-                                key = currentField.trim();
-                            } else {
-                                value = currentField.trim();
-                            }
+                            if (fieldIndex === 0) key = currentField.trim();
+                            else value = currentField.trim();
                             currentField = '';
                             fieldIndex++;
                         } else {
                             currentField += char;
                         }
                     }
-                    
-                    // Get the last field
-                    if (fieldIndex === 0) {
-                        key = currentField.trim();
-                    } else {
-                        value = currentField.trim();
-                    }
-                    
-                    if (key && value) {
-                        configObj[key] = value;
-                        console.log(`Config parsed: "${key}" = "${value}"`);
-                    }
+                    if (fieldIndex === 0) key = currentField.trim();
+                    else value = currentField.trim();
+                    if (key && value) configObj[key] = value;
                 }
                 
-                // Don't parse discount codes from config anymore - we have separate CSV
-                // Remove the old discount code parsing logic
-                
-                // Parse location
                 if (configObj['Lat,Long']) {
                     const [lat, lng] = configObj['Lat,Long'].split(',').map(s => parseFloat(s.trim()));
                     configObj.outletLocation = { lat, lng };
                 }
                 
-                // Parse delivery radius
                 if (configObj['gps coordinate']) {
                     configObj.deliveryRadius = parseFloat(configObj['gps coordinate'].replace(/[^\d.]/g, ''));
                 }
                 
-                // Parse GST rate - check both 'gst%' and 'gst' keys
                 if (configObj['gst%'] || configObj['gst']) {
-                    const gstStr = (configObj['gst%'] || configObj['gst']).toString();
-                    console.log('Raw GST string from CSV:', gstStr);
-                    const gstValue = parseFloat(gstStr.replace(/[^\d.]/g, ''));
-                    console.log('Parsed GST value:', gstValue);
+                    const gstValue = parseFloat((configObj['gst%'] || configObj['gst']).replace(/[^\d.]/g, ''));
                     if (!isNaN(gstValue) && gstValue > 0) {
                         GST_RATE = gstValue / 100;
-                        console.log('✓ GST rate loaded from CSV:', gstValue + '%', '(Rate:', GST_RATE + ')');
-                    } else {
-                        console.warn('Invalid GST value, using default 5%');
                     }
-                } else {
-                    console.warn('No gst% or gst key found in config. Available keys:', Object.keys(configObj));
                 }
                 
-                // Parse brand name
-                if (configObj['brand']) {
-                    brandName = configObj['brand'];
-                    console.log('✓ Brand name loaded:', brandName);
-                }
+                if (configObj['brand']) brandName = configObj['brand'];
+                if (configObj['whatsapp']) whatsappNumber = configObj['whatsapp'].replace(/[^\d]/g, '');
                 
-                // Parse WhatsApp number
-                if (configObj['whatsapp']) {
-                    whatsappNumber = configObj['whatsapp'].replace(/[^\d]/g, '');
-                    console.log('✓ WhatsApp number loaded:', whatsappNumber);
-                }
-                
-                console.log('✓ Full config loaded successfully:', configObj);
                 return configObj;
             } catch (error) {
                 console.error("Error fetching config:", error);
@@ -1263,35 +922,19 @@
             try {
                 const response = await fetch(DISCOUNT_CSV_URL);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                
                 const csvText = await response.text();
                 const lines = csvText.trim().split('\n');
-                const headers = lines[0].split(',').map(h => h.trim());
-                
-                console.log('Discount CSV headers:', headers);
-                
                 const codes = {};
                 
-                // Parse each discount code line
                 for (let i = 1; i < lines.length; i++) {
-                    const line = lines[i];
-                    const values = line.split(',').map(v => v.trim());
-                    
+                    const values = lines[i].split(',').map(v => v.trim());
                     if (values.length >= 3) {
-                        const code = values[0].toUpperCase(); // Code
-                        const discount = values[1]; // Discount percentage
-                        const category = values[2]; // Category
-                        
-                        codes[code] = {
-                            discount: discount,
-                            category: category
+                        codes[values[0].toUpperCase()] = {
+                            discount: values[1],
+                            category: values[2]
                         };
-                        
-                        console.log(`Discount code loaded: ${code} = ${discount} on ${category}`);
                     }
                 }
-                
-                console.log('✓ All discount codes loaded:', codes);
                 return codes;
             } catch (error) {
                 console.error("Error fetching discount codes:", error);
@@ -1299,73 +942,8 @@
             }
         }
 
-        function checkOutletStatus() {
-            if (!config['on time'] || !config['off time']) {
-                console.log('No time configuration found, outlet open by default');
-                return { open: true };
-            }
-            
-            const now = new Date();
-            const currentTime = now.getHours() * 60 + now.getMinutes();
-            const currentDay = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][now.getDay()];
-            const currentDate = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()}`;
-            const currentDateSlash = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
-            
-            console.log('Current time (minutes):', currentTime);
-            console.log('Current day:', currentDay);
-            console.log('Current date:', currentDate, 'or', currentDateSlash);
-            console.log('Config on time:', config['on time']);
-            console.log('Config off time:', config['off time']);
-            console.log('Config off days:', config['off days']);
-            console.log('Config holidays:', config['holidays']);
-            
-            // Parse opening time
-            const onTimeParts = config['on time'].split(':');
-            const onHour = parseInt(onTimeParts[0]);
-            const onMin = onTimeParts[1] ? parseInt(onTimeParts[1]) : 0;
-            const onTime = onHour * 60 + onMin;
-            
-            // Parse closing time
-            const offTimeParts = config['off time'].split(':');
-            const offHour = parseInt(offTimeParts[0]);
-            const offMin = offTimeParts[1] ? parseInt(offTimeParts[1]) : 0;
-            const offTime = offHour * 60 + offMin;
-            
-            console.log('Parsed on time (minutes):', onTime);
-            console.log('Parsed off time (minutes):', offTime);
-            
-            // Check time
-            if (currentTime < onTime || currentTime > offTime) {
-                return { 
-                    open: false, 
-                    reason: `We're open from ${config['on time']} to ${config['off time']}. Current time: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}` 
-                };
-            }
-            
-            // Check off days
-            if (config['off days']) {
-                const offDays = config['off days'].toLowerCase().split(',').map(d => d.trim());
-                console.log('Off days array:', offDays);
-                if (offDays.includes(currentDay)) {
-                    return { open: false, reason: `We're closed on ${currentDay.charAt(0).toUpperCase() + currentDay.slice(1)}days` };
-                }
-            }
-            
-            // Check holidays (support both dash and slash formats)
-            if (config['holidays']) {
-                const holidays = config['holidays'].split(',').map(d => d.trim());
-                console.log('Holidays array:', holidays);
-                if (holidays.includes(currentDate) || holidays.includes(currentDateSlash)) {
-                    return { open: false, reason: "We're closed for the holiday today" };
-                }
-            }
-            
-            console.log('All checks passed, outlet is open');
-            return { open: true };
-        }
-
         function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Earth's radius in km
+            const R = 6371;
             const dLat = (lat2 - lat1) * Math.PI / 180;
             const dLon = (lon2 - lon1) * Math.PI / 180;
             const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
@@ -1375,154 +953,44 @@
             return R * c;
         }
 
-        async function checkUserLocation() {
-            // Check if GPS verification is enabled
-            if (config['gps check'] && config['gps check'].toLowerCase() === 'no') {
-                console.log("GPS check disabled in config, skipping location verification");
-                return { allowed: true };
-            }
+        function calculateTotals() {
+            const subtotal = cart.reduce((sum, item) => sum + item.subtotal, 0);
+            let discount = 0;
             
-            if (!config.outletLocation || !config.deliveryRadius) {
-                console.log("No location config, skipping location check");
-                return { allowed: true };
-            }
-            
-            return new Promise((resolve) => {
-                if (!navigator.geolocation) {
-                    console.log("Geolocation not supported");
-                    resolve({ allowed: true });
-                    return;
-                }
+            if (appliedDiscount && discountCodes[appliedDiscount]) {
+                const discountInfo = discountCodes[appliedDiscount];
+                const discountPercent = parseFloat(discountInfo.discount.replace('%', '')) / 100;
+                const category = discountInfo.category.toLowerCase().trim();
                 
-                console.log("Requesting user location...");
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        userLocation = {
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude
-                        };
-                        
-                        console.log("User location:", userLocation);
-                        console.log("Outlet location:", config.outletLocation);
-                        
-                        const distance = calculateDistance(
-                            userLocation.lat,
-                            userLocation.lng,
-                            config.outletLocation.lat,
-                            config.outletLocation.lng
-                        );
-                        
-                        console.log("Distance:", distance.toFixed(2), "km");
-                        console.log("Delivery radius:", config.deliveryRadius, "km");
-                        
-                        if (distance > config.deliveryRadius) {
-                            resolve({ 
-                                allowed: false, 
-                                reason: `You are ${distance.toFixed(1)}km away. We deliver within ${config.deliveryRadius}km.` 
-                            });
-                        } else {
-                            resolve({ allowed: true });
-                        }
-                    },
-                    (error) => {
-                        console.log('Location access denied or unavailable:', error);
-                        // If GPS check is 'yes', require location
-                        if (config['gps check'] && config['gps check'].toLowerCase() === 'yes') {
-                            resolve({ 
-                                allowed: false, 
-                                reason: 'Location permission required. Please enable location access and refresh the page.' 
-                            });
-                        } else {
-                            resolve({ allowed: true }); // Allow ordering if location denied and GPS not mandatory
-                        }
-                    },
-                    {
-                        enableHighAccuracy: true,
-                        timeout: 10000,
-                        maximumAge: 0
-                    }
-                );
-            });
+                if (category === 'all') {
+                    discount = subtotal * discountPercent;
+                } else {
+                    const categoryTotal = cart
+                        .filter(item => (item.Category || '').toLowerCase().trim() === category)
+                        .reduce((sum, item) => sum + item.subtotal, 0);
+                    discount = categoryTotal * discountPercent;
+                }
+            }
+            
+            const afterDiscount = subtotal - discount;
+            const gst = afterDiscount * GST_RATE;
+            const grandTotal = afterDiscount + gst;
+            
+            return { subtotal, discount, gst, grandTotal };
         }
 
-        function showClosedOverlay(reason) {
-            const overlay = document.createElement('div');
-            overlay.id = 'closed-overlay';
-            overlay.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: rgba(0, 0, 0, 0.9);
-                z-index: 9999;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                color: white;
-                text-align: center;
-                padding: 30px;
-                border-radius: 50%;
-                width: 200px;
-                height: 200px;
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-                pointer-events: none;
-            `;
-            overlay.innerHTML = `
-                <div style="font-size: 3em; margin-bottom: 10px;">🔒</div>
-                <div style="font-size: 0.9em; font-weight: 600; line-height: 1.3;">${reason}</div>
-            `;
-            document.body.appendChild(overlay);
-        }
-
-        async function loadMenuData() {
-            console.log("Loading configuration...");
-            config = await fetchConfig();
-            console.log("Config loaded:", config);
-            
-            console.log("Loading discount codes...");
-            discountCodes = await fetchDiscountCodes();
-            console.log("Discount codes loaded:", discountCodes);
-            
-            // Update header with brand name
-            document.querySelector('.header h1').innerHTML = `${brandName} <span id="table-number-display"></span>`;
-            if (tableNumber) {
-                document.getElementById('table-number-display').textContent = `- Table ${tableNumber}`;
+        function updateCartSummary() {
+            const cartSummaryBar = document.getElementById('cart-summary-bar');
+            if (cart.length === 0) {
+                cartSummaryBar.classList.remove('visible');
+                return;
             }
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const { grandTotal } = calculateTotals();
             
-            // Check outlet status but don't block UI
-            const statusCheck = checkOutletStatus();
-            console.log("Status check result:", statusCheck);
-            
-            if (!statusCheck.open) {
-                outletOpen = false;
-                outletClosedReason = statusCheck.reason;
-                showClosedOverlay(statusCheck.reason);
-            }
-            
-            // Check user location but don't block UI - wrap in try-catch
-            try {
-                const locationCheck = await checkUserLocation();
-                console.log("Location check result:", locationCheck);
-                
-                if (!locationCheck.allowed) {
-                    outletOpen = false;
-                    outletClosedReason = locationCheck.reason;
-                    showClosedOverlay(locationCheck.reason);
-                }
-            } catch (error) {
-                console.error("Error checking location:", error);
-            }
-            
-            console.log("Loading menu items...");
-            menuItems = await fetchAndParseCSV(MENU_CSV_URL);
-            
-            console.log("Loading add-ons...");
-            addons = await fetchAndParseCSV(ADDONS_CSV_URL);
-
-            console.log("Data loaded successfully!");
-            console.log("Menu Items:", menuItems);
-            console.log("Addons:", addons);
+            document.getElementById('cart-item-count').textContent = `${totalItems} Item${totalItems > 1 ? 's' : ''}`;
+            document.getElementById('cart-total-price').textContent = grandTotal.toFixed(2);
+            cartSummaryBar.classList.add('visible');
         }
 
         function getTableNumberFromURL() {
@@ -1544,156 +1012,24 @@
         }
 
         function getFilteredItems() {
-            if (!searchQuery) {
-                // Filter out items with status FALSE
-                return menuItems.filter(item => {
-                    const status = (item.status || '').toString().toUpperCase();
-                    return status !== 'FALSE';
-                });
-            }
-            
-            const query = searchQuery.toLowerCase();
             return menuItems.filter(item => {
-                // First check status
                 const status = (item.status || '').toString().toUpperCase();
                 if (status === 'FALSE') return false;
-                
-                // Then check search query
-                return item.Name.toLowerCase().includes(query) ||
-                       item.Category.toLowerCase().includes(query);
+                if (!searchQuery) return true;
+                const query = searchQuery.toLowerCase();
+                return item.Name.toLowerCase().includes(query) || item.Category.toLowerCase().includes(query);
             });
-        }
-
-        function isImageUrl(text) {
-            if (!text) return false;
-            text = text.trim();
-            
-            // Check if it's a URL (http or https)
-            const urlPattern = /^https?:\/\//i;
-            return urlPattern.test(text);
-        }
-
-        function getYouTubeEmbedUrl(url) {
-            // Extract YouTube video ID from various URL formats
-            let videoId = null;
-            
-            // Check for YouTube Shorts
-            const shortsRegExp = /youtube\.com\/shorts\/([^#&?]*)/;
-            const shortsMatch = url.match(shortsRegExp);
-            if (shortsMatch && shortsMatch[1]) {
-                videoId = shortsMatch[1];
-            }
-            
-            // Check for regular YouTube URLs
-            if (!videoId) {
-                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-                const match = url.match(regExp);
-                if (match && match[2] && match[2].length === 11) {
-                    videoId = match[2];
-                }
-            }
-            
-            if (videoId) {
-                // Add playback speed parameter - note: speed must be enabled via YouTube API
-                return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&enablejsapi=1`;
-            }
-            
-            // Check if it's just youtube.com without a video ID
-            if (url.includes('youtube.com') && !url.includes('watch?v=') && !url.includes('embed/') && !url.includes('shorts/')) {
-                return null; // Not a valid video URL
-            }
-            
-            return null;
-        }
-
-        function showDescription(item) {
-            if (!item.description || item.description.trim() === '') return;
-            
-            descriptionTitle.textContent = item.Name;
-            
-            const desc = item.description.trim();
-            console.log('Showing description for:', item.Name);
-            console.log('Description value:', desc);
-            console.log('Is URL:', isImageUrl(desc));
-            
-            if (isImageUrl(desc)) {
-                // Check if it's a YouTube URL
-                const youtubeEmbedUrl = getYouTubeEmbedUrl(desc);
-                
-                if (youtubeEmbedUrl) {
-                    console.log('YouTube embed URL:', youtubeEmbedUrl);
-                    const videoId = 'yt-video-' + Date.now();
-                    // Show YouTube video with autoplay and 0.5x speed
-                    descriptionContent.innerHTML = `
-                        <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; background: #000;">
-                            <iframe id="${videoId}" 
-                                    src="${youtubeEmbedUrl}" 
-                                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
-                                    frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowfullscreen>
-                            </iframe>
-                        </div>
-                    `;
-                    
-                    // Set playback speed to 0.5x using YouTube IFrame API
-                    setTimeout(() => {
-                        const iframe = document.getElementById(videoId);
-                        if (iframe) {
-                            // Send message to set playback speed
-                            iframe.contentWindow.postMessage('{"event":"command","func":"setPlaybackRate","args":[0.5]}', '*');
-                            console.log('Set YouTube playback speed to 0.5x');
-                        }
-                    }, 1000);
-                } else {
-                    // Try to load as image first, fallback to iframe/link if it fails
-                    const contentId = 'desc-content-' + Date.now();
-                    descriptionContent.innerHTML = `
-                        <img src="${desc}" 
-                             alt="${item.Name}" 
-                             id="${contentId}-img"
-                             style="width: 100%; display: block; margin: 0;" 
-                             onload="console.log('Image loaded successfully')"
-                             onerror="console.log('Image failed, trying iframe'); document.getElementById('${contentId}-img').style.display='none'; document.getElementById('${contentId}-iframe').style.display='block';">
-                        <iframe src="${desc}" 
-                                id="${contentId}-iframe"
-                                style="width: 100%; height: 70vh; border: none; display: none;"
-                                onload="console.log('Iframe loaded successfully')"
-                                onerror="console.log('Iframe failed, showing link'); document.getElementById('${contentId}-iframe').style.display='none'; document.getElementById('${contentId}-fallback').style.display='block';">
-                        </iframe>
-                        <div id="${contentId}-fallback" style="display: none; padding: 30px 20px; background: #f5f5f5; text-align: center;">
-                            <p style="margin-bottom: 20px; color: #666; font-size: 1em;">Content cannot be displayed in preview</p>
-                            <a href="${desc}" target="_blank" 
-                               style="display: inline-block; background: var(--primary-color); color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: 600; font-size: 1em;">
-                                Open Link in New Tab →
-                            </a>
-                        </div>
-                    `;
-                }
-            } else {
-                descriptionContent.innerHTML = `<p style="line-height: 1.8; padding: 20px;">${desc}</p>`;
-            }
-            
-            descriptionModalOverlay.classList.add('visible');
-        }
-
-        function closeDescriptionModal() {
-            descriptionModalOverlay.classList.remove('visible');
-            // Stop any playing videos by clearing the content
-            descriptionContent.innerHTML = '';
         }
 
         function renderCategories() {
             const filteredItems = getFilteredItems();
-            
-            // Get unique categories from filtered items
             const categories = [...new Set(filteredItems.map(item => item.Category))];
-            
+            const categoryListUl = document.getElementById('category-list-ul');
             categoryListUl.innerHTML = '';
             
             if (categories.length === 0 && searchQuery) {
-                categoryListUl.innerHTML = '<li style="padding: 15px 10px; color: #999; font-size: 0.85em; text-align: center;">No matches</li>';
-                itemListMain.innerHTML = '<p style="padding: 40px 20px; text-align: center; color: #999;">No items found matching your search</p>';
+                categoryListUl.innerHTML = '<li style="padding: 15px 10px; color: #999; text-align: center;">No matches</li>';
+                document.getElementById('item-list-main').innerHTML = '<p style="padding: 40px 20px; text-align: center; color: #999;">No items found</p>';
                 return;
             }
             
@@ -1716,17 +1052,22 @@
         }
 
         function renderItems(category) {
+            const itemListMain = document.getElementById('item-list-main');
             itemListMain.innerHTML = '';
             const filteredItems = getFilteredItems();
             const itemsInCategory = filteredItems.filter(item => item.Category === category);
             
             if (itemsInCategory.length === 0) {
-                itemListMain.innerHTML = '<p style="padding: 40px 20px; text-align: center; color: #999;">No items found in this category</p>';
+                itemListMain.innerHTML = '<p style="padding: 40px 20px; text-align: center; color: #999;">No items in this category</p>';
                 return;
             }
             
             itemsInCategory.forEach(item => {
-                const itemInCart = cart.find(cartItem => cartItem.Name === item.Name && !cartItem.selectedAddons.length && !cartItem.instructions);
+                const itemInCart = cart.find(cartItem => 
+                    cartItem.Name === item.Name && 
+                    (!cartItem.selectedAddons || cartItem.selectedAddons.length === 0) && 
+                    !cartItem.instructions
+                );
                 const itemCard = document.createElement('div');
                 itemCard.className = 'item-card';
 
@@ -1736,18 +1077,12 @@
                 } else {
                     actionHtml = `<button class="add-button" data-item-name="${item.Name}">ADD</button>`;
                 }
-                
-                // Add info icon if description exists
-                const hasDescription = item.description && item.description.trim() !== '';
-                console.log(`Item: ${item.Name}, Has description: ${hasDescription}, Description: "${item.description}"`);
-                const infoIconHtml = hasDescription ? `<button class="info-icon" data-item-name="${item.Name}" title="View description">i</button>` : '';
 
                 itemCard.innerHTML = `
                     <div class="item-details">
                         <div class="item-name">
                             <div class="attribute-icon ${getAttributeClass(item.Attributes)}"></div>
                             <span style="flex: 1;">${item.Name}</span>
-                            ${infoIconHtml}
                         </div>
                         <div class="item-price">₹${item.Price}</div>
                     </div>
@@ -1760,24 +1095,9 @@
                 btn.addEventListener('click', (e) => {
                     const itemName = e.target.dataset.itemName;
                     const item = menuItems.find(i => i.Name === itemName);
-                    if (item.Addon_Group_Name) {
-                        openCustomizationModal(item);
-                    } else {
-                        cart.push({ ...item, quantity: 1, selectedAddons: [], instructions: '', subtotal: item.Price });
-                        updateCartSummary();
-                        renderItems(activeCategory);
-                    }
-                });
-            });
-            
-            itemListMain.querySelectorAll('.info-icon').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const itemName = e.target.dataset.itemName;
-                    const item = menuItems.find(i => i.Name === itemName);
-                    if (item) {
-                        showDescription(item);
-                    }
+                    cart.push({ ...item, quantity: 1, selectedAddons: [], instructions: '', subtotal: item.Price });
+                    updateCartSummary();
+                    renderItems(activeCategory);
                 });
             });
 
@@ -1785,16 +1105,19 @@
                 btn.addEventListener('click', (e) => {
                     const isIncrease = e.target.classList.contains('increase-item-qty');
                     const itemName = e.target.dataset.itemName;
-                    const cartIndex = cart.findIndex(i => i.Name === itemName && !i.selectedAddons.length && !i.instructions);
+                    const cartIndex = cart.findIndex(i => 
+                        i.Name === itemName && 
+                        (!i.selectedAddons || i.selectedAddons.length === 0) && 
+                        !i.instructions
+                    );
                     if (cartIndex > -1) {
                         if (isIncrease) {
                             cart[cartIndex].quantity++;
                         } else {
                             cart[cartIndex].quantity--;
                         }
-
                         if (cart[cartIndex].quantity <= 0) {
-                             cart.splice(cartIndex, 1);
+                            cart.splice(cartIndex, 1);
                         } else {
                             cart[cartIndex].subtotal = cart[cartIndex].Price * cart[cartIndex].quantity;
                         }
@@ -1804,95 +1127,49 @@
                 });
             });
         }
-        
-        function openCustomizationModal(item, cartIndex = null) {
-            currentItemForModal = item;
-            editingCartItemIndex = cartIndex;
-            const existingItem = (cartIndex !== null) ? cart[cartIndex] : null;
-            const relevantAddons = addons.filter(addon => addon.Addon_Group_Name === item.Addon_Group_Name);
-            const addonGroups = {};
-            relevantAddons.forEach(addon => {
-                if (!addonGroups[addon.Addon_Group_Name]) {
-                    addonGroups[addon.Addon_Group_Name] = { items: [], type: addon.Addon_Item_Selection === 'S' ? 'radio' : 'checkbox', name: addon.Addon_Group_Name.replace(/\s+/g, '-') };
-                }
-                addonGroups[addon.Addon_Group_Name].items.push(addon);
-            });
-            let addonHtml = '';
-            for (const groupName in addonGroups) {
-                const group = addonGroups[groupName];
-                addonHtml += `<div class="addon-group"><h4>${groupName}</h4>`;
-                group.items.forEach(addon => {
-                    const isChecked = existingItem ? existingItem.selectedAddons.some(sa => sa.name === addon.Addon_Item_Name) : false;
-                    addonHtml += `<div class="addon-item"><input type="${group.type}" name="${group.name}" id="${addon.Addon_Item_Name}" value="${addon.Addon_Item_Price}" data-name="${addon.Addon_Item_Name}" ${isChecked ? 'checked' : ''}><label for="${addon.Addon_Item_Name}">${addon.Addon_Item_Name}</label><span class="price">+ ₹${addon.Addon_Item_Price}</span></div>`;
-                });
-                addonHtml += `</div>`;
-            }
-            custModalContent.innerHTML = `<div class="modal-header"><div class="modal-item-name">${item.Name}</div><span class="close-btn" id="close-cust-modal">&times;</span></div><div class="modal-body">${addonHtml}<textarea class="instructions" id="special-instructions" placeholder="Special instructions...">${existingItem ? existingItem.instructions : ''}</textarea></div><div class="modal-footer"><div class="quantity-control"><button class="quantity-btn" id="decrease-qty">-</button><span class="quantity-display" id="quantity-display">${existingItem ? existingItem.quantity : 1}</span><button class="quantity-btn" id="increase-qty">+</button></div><button class="add-to-cart-btn" id="add-to-cart-btn">${editingCartItemIndex !== null ? 'Update Item' : 'Add Item'}</button></div>`;
-            custModalOverlay.classList.add('visible');
-            updateModalPrice();
-            document.getElementById('decrease-qty').addEventListener('click', () => updateQuantity(-1));
-            document.getElementById('increase-qty').addEventListener('click', () => updateQuantity(1));
-            document.getElementById('add-to-cart-btn').addEventListener('click', saveItemToCart);
-            document.getElementById('close-cust-modal').addEventListener('click', closeCustomizationModal);
-            custModalContent.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
-                input.addEventListener('change', updateModalPrice);
-            });
-        }
-        
-        function updateModalPrice() {
-            let addonPrice = Array.from(custModalContent.querySelectorAll('input:checked')).reduce((sum, input) => sum + parseFloat(input.value), 0);
-            const quantity = parseInt(document.getElementById('quantity-display').textContent);
-            const totalItemPrice = (currentItemForModal.Price + addonPrice) * quantity;
-            document.getElementById('add-to-cart-btn').textContent = `${editingCartItemIndex !== null ? 'Update' : 'Add'} Item - ₹${totalItemPrice.toFixed(2)}`;
-        }
-
-        function updateQuantity(change) {
-            const qtyDisplay = document.getElementById('quantity-display');
-            let currentQty = parseInt(qtyDisplay.textContent) + change;
-            if (currentQty < 1) currentQty = 1;
-            qtyDisplay.textContent = currentQty;
-            updateModalPrice();
-        }
-
-        function closeCustomizationModal() {
-            custModalOverlay.classList.remove('visible');
-            custModalContent.innerHTML = '';
-            currentItemForModal = null;
-            editingCartItemIndex = null;
-        }
-        
-        function saveItemToCart() {
-            const selectedAddons = Array.from(custModalContent.querySelectorAll('input:checked')).map(input => ({ name: input.dataset.name, price: parseFloat(input.value) }));
-            const quantity = parseInt(document.getElementById('quantity-display').textContent);
-            const instructions = document.getElementById('special-instructions').value;
-            const basePrice = currentItemForModal.Price;
-            const addonsTotalPrice = selectedAddons.reduce((sum, addon) => sum + addon.price, 0);
-            const itemSubtotal = (basePrice + addonsTotalPrice) * quantity;
-            const cartItem = { ...currentItemForModal, selectedAddons, quantity, instructions, subtotal: itemSubtotal };
-            if (editingCartItemIndex !== null) {
-                cart[editingCartItemIndex] = cartItem;
-            } else {
-                cart.push(cartItem);
-            }
-            updateCartSummary();
-            renderItems(activeCategory);
-            closeCustomizationModal();
-        }
 
         function renderCartModal() {
+            const cartModalBody = document.getElementById('cart-modal-body');
+            const cartTotalsSummary = document.getElementById('cart-totals-summary');
             cartModalBody.innerHTML = '';
+            
             if (cart.length === 0) {
                 cartModalBody.innerHTML = '<p style="padding: 20px; text-align: center;">Your cart is empty.</p>';
                 cartTotalsSummary.innerHTML = '';
                 return;
             }
+            
             cart.forEach((item, index) => {
-                let addonsHtml = item.selectedAddons.map(addon => `<li>${addon.name}</li>`).join('');
-                if (addonsHtml) addonsHtml = `<ul class="cart-item-addons">${addonsHtml}</ul>`;
-                let instructionsHtml = item.instructions ? `<p class="cart-item-instructions">"${item.instructions}"</p>` : '';
+                let addonsHtml = '';
+                if (item.selectedAddons && item.selectedAddons.length > 0) {
+                    addonsHtml = '<ul style="list-style: none; padding-left: 20px; font-size: 0.85em; color: #666; margin-top: 5px;">';
+                    item.selectedAddons.forEach(addon => {
+                        addonsHtml += `<li>• ${addon.name}</li>`;
+                    });
+                    addonsHtml += '</ul>';
+                }
+                
+                let instructionsHtml = '';
+                if (item.instructions && item.instructions.trim()) {
+                    instructionsHtml = `<p style="font-size: 0.85em; color: #d9534f; font-style: italic; margin-left: 20px; margin-top: 5px;">"${item.instructions}"</p>`;
+                }
+                
                 const cartItemDiv = document.createElement('div');
                 cartItemDiv.className = 'cart-item';
-                cartItemDiv.innerHTML = `<div class="cart-item-name"><div class="attribute-icon ${getAttributeClass(item.Attributes)}"></div>${item.quantity} x ${item.Name}</div>${addonsHtml}${instructionsHtml}<div class="cart-item-footer"><div class="cart-item-actions"><button class="cart-edit-btn" data-cart-index="${index}">Edit</button><button class="cart-remove-btn" data-cart-index="${index}">Remove</button></div><div class="cart-item-price">₹${item.subtotal.toFixed(2)}</div></div>`;
+                cartItemDiv.innerHTML = `
+                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <div class="attribute-icon ${getAttributeClass(item.Attributes)}"></div>
+                        <span style="font-weight: 700; font-size: 1em;">${item.quantity} x ${item.Name}</span>
+                    </div>
+                    ${addonsHtml}
+                    ${instructionsHtml}
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+                        <div>
+                            <button class="cart-remove-btn" data-cart-index="${index}" style="color: #d9534f; border-color: #d9534f; font-size: 0.85em; padding: 8px 14px; border: 1.5px solid; border-radius: 20px; cursor: pointer; background: white; font-weight: 600;">Remove</button>
+                        </div>
+                        <div style="font-weight: 700; font-size: 1em; color: var(--primary-color);">₹${item.subtotal.toFixed(2)}</div>
+                    </div>
+                `;
                 cartModalBody.appendChild(cartItemDiv);
             });
 
@@ -1904,13 +1181,7 @@
                 <div class="totals-row"><span>GST (${gstPercent}%)</span><span>₹${gst.toFixed(2)}</span></div>
                 <div class="totals-row grand-total"><span>Grand Total</span><span>₹${grandTotal.toFixed(2)}</span></div>
             `;
-            cartModalBody.querySelectorAll('.cart-edit-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const cartIndex = parseInt(e.target.dataset.cartIndex);
-                    cartModalOverlay.classList.remove('visible');
-                    openCustomizationModal(cart[cartIndex], cartIndex);
-                });
-            });
+            
             cartModalBody.querySelectorAll('.cart-remove-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     cart.splice(parseInt(e.target.dataset.cartIndex), 1);
@@ -1920,123 +1191,10 @@
                 });
             });
         }
-        
-        function calculateTotals() {
-            const subtotal = cart.reduce((sum, item) => sum + item.subtotal, 0);
-            let discount = 0;
-            
-            if (appliedDiscount) {
-                const discountInfo = discountCodes[appliedDiscount];
-                if (discountInfo) {
-                    const discountPercent = parseFloat(discountInfo.discount.replace('%', '')) / 100;
-                    const category = discountInfo.category.toLowerCase().trim();
-                    
-                    console.log('Applying discount:', appliedDiscount);
-                    console.log('Discount category:', category);
-                    console.log('Discount percent:', discountPercent);
-                    
-                    if (category === 'all') {
-                        discount = subtotal * discountPercent;
-                        console.log('Applied to all items. Discount:', discount);
-                    } else {
-                        // Check each cart item's category (case-insensitive)
-                        const categoryTotal = cart
-                            .filter(item => {
-                                const itemCategory = (item.Category || '').toLowerCase().trim();
-                                const matches = itemCategory === category;
-                                console.log(`Item: ${item.Name}, Category: "${itemCategory}", Matches "${category}": ${matches}`);
-                                return matches;
-                            })
-                            .reduce((sum, item) => sum + item.subtotal, 0);
-                        
-                        discount = categoryTotal * discountPercent;
-                        console.log(`Applied to category "${category}". Category total: ${categoryTotal}, Discount: ${discount}`);
-                    }
-                }
-            }
-            
-            const afterDiscount = subtotal - discount;
-            const gst = afterDiscount * GST_RATE;
-            const grandTotal = afterDiscount + gst;
-            
-            return { subtotal, discount, gst, grandTotal };
-        }
-
-        function updateCartSummary() {
-            if (cart.length === 0) {
-                cartSummaryBar.classList.remove('visible');
-                return;
-            }
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            const { grandTotal } = calculateTotals();
-            
-            cartItemCountSpan.textContent = `${totalItems} Item${totalItems > 1 ? 's' : ''}`;
-            cartTotalPriceSpan.textContent = grandTotal.toFixed(2);
-            cartSummaryBar.classList.add('visible');
-        }
-
-        function generateWhatsAppMessage() {
-            if (cart.length === 0) {
-                alert("Your cart is empty!");
-                return null;
-            }
-            let message = "";
-            if (tableNumber) {
-                message += `*New Order from Table: ${tableNumber}*\n\n`;
-            } else {
-                message += "*New Order Request*\n\n";
-            }
-            cart.forEach((item) => {
-                message += `*${item.quantity}x ${item.Name}* - ₹${item.subtotal.toFixed(2)}\n`;
-                if (item.selectedAddons.length > 0) {
-                    item.selectedAddons.forEach(addon => { message += `  - _${addon.name}_\n`; });
-                }
-                if (item.instructions.trim()) {
-                    message += `  > _Item Instructions: ${item.instructions.trim()}_\n`;
-                }
-            });
-
-            const { subtotal, discount, gst, grandTotal } = calculateTotals();
-            const gstPercent = (GST_RATE * 100).toFixed(0);
-            message += `\n-----------------------------------\n`;
-            message += `*Subtotal:* ₹${subtotal.toFixed(2)}\n`;
-            if (discount > 0) {
-                message += `*Discount (${appliedDiscount}):* -₹${discount.toFixed(2)}\n`;
-            }
-            message += `*GST (${gstPercent}%):* ₹${gst.toFixed(2)}\n`;
-            message += `*Grand Total: ₹${grandTotal.toFixed(2)}*\n`;
-            message += `-----------------------------------\n`;
-
-            const generalInstructions = document.getElementById('general-instructions').value.trim();
-            if (generalInstructions) {
-                message += `\n*General Instructions:*\n_${generalInstructions}_\n`;
-            }
-            
-            // Add location information
-            if (userLocation && config.outletLocation) {
-                const distance = calculateDistance(
-                    userLocation.lat,
-                    userLocation.lng,
-                    config.outletLocation.lat,
-                    config.outletLocation.lng
-                );
-                
-                message += `\n📍 *Location Details:*\n`;
-                message += `Customer Location: https://www.google.com/maps/?q=${userLocation.lat},${userLocation.lng}\n`;
-                message += `Distance from cafe: ${distance.toFixed(2)} km\n`;
-            }
-            
-            return encodeURIComponent(message);
-        }
 
         function applyDiscountCode() {
             const code = document.getElementById('discount-code-input').value.trim().toUpperCase();
             const messageEl = document.getElementById('discount-message');
-            
-            console.log('=== DISCOUNT CODE DEBUG ===');
-            console.log('Attempting to apply discount code:', code);
-            console.log('Available discountCodes:', discountCodes);
-            console.log('Type of discountCodes:', typeof discountCodes);
             
             if (!code) {
                 messageEl.style.color = '#d9534f';
@@ -2044,17 +1202,7 @@
                 return;
             }
             
-            // Check if discountCodes exists and is an object
-            if (!discountCodes || typeof discountCodes !== 'object') {
-                console.error('Discount codes not loaded properly');
-                messageEl.style.color = '#d9534f';
-                messageEl.textContent = 'Discount system unavailable';
-                return;
-            }
-            
-            // Check if the entered code exists
             if (!discountCodes[code]) {
-                console.log('Code not found. Available codes:', Object.keys(discountCodes));
                 messageEl.style.color = '#d9534f';
                 messageEl.textContent = 'Invalid discount code';
                 appliedDiscount = null;
@@ -2067,454 +1215,103 @@
             const discountInfo = discountCodes[code];
             messageEl.style.color = '#25D366';
             messageEl.textContent = `✓ ${discountInfo.discount} discount applied!`;
-            console.log('Discount applied successfully:', appliedDiscount, discountInfo);
-            console.log('=== END DEBUG ===');
             renderCartModal();
             updateCartSummary();
         }
 
-        custModalOverlay.addEventListener('click', (e) => { if (e.target === custModalOverlay) closeCustomizationModal(); });
-        cartModalOverlay.addEventListener('click', (e) => { if (e.target === cartModalOverlay) cartModalOverlay.classList.remove('visible'); });
-        confirmationModalOverlay.addEventListener('click', (e) => { if (e.target === confirmationModalOverlay) confirmationModalOverlay.classList.remove('visible'); });
-        descriptionModalOverlay.addEventListener('click', (e) => { if (e.target === descriptionModalOverlay) closeDescriptionModal(); });
-        
-        descriptionClose.addEventListener('click', closeDescriptionModal);
-        closeCartModalBtn.addEventListener('click', () => cartModalOverlay.classList.remove('visible'));
-        
-        closeConfirmationModalBtn.addEventListener('click', () => {
-            confirmationModalOverlay.classList.remove('visible');
-        });
-        
-        document.getElementById('cancel-order-btn').addEventListener('click', () => {
-            confirmationModalOverlay.classList.remove('visible');
-        });
-        
-        document.getElementById('confirm-send-btn').addEventListener('click', () => {
-            const message = generateWhatsAppMessage();
-            if (message) {
-                window.open(`https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${message}`, '_blank');
-            }
-            confirmationModalOverlay.classList.remove('visible');
-            cartModalOverlay.classList.remove('visible');
-        });
-        
-        viewOrderBtn.addEventListener('click', () => {
-            renderCartModal();
-            cartModalOverlay.classList.add('visible');
-        });
-        
-        // Apply discount code button handler
-        const applyDiscountBtn = document.getElementById('apply-discount-btn');
-        if (applyDiscountBtn) {
-            applyDiscountBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                applyDiscountCode();
-            });
-        }
-
-        sendWhatsappBtn.addEventListener('click', async () => {
-            // Check if outlet is closed
-            if (!outletOpen) {
-                alert(`⚠️ Cannot place order\n\n${outletClosedReason}`);
-                return;
-            }
-            
-            // Open confirmation modal
-            confirmationModalOverlay.classList.add('visible');
-            document.getElementById('confirmation-loading').style.display = 'block';
-            document.getElementById('confirmation-content').style.display = 'none';
-            document.getElementById('confirm-send-btn').style.display = 'none';
-            document.getElementById('cancel-order-btn').style.display = 'none';
-            
-            try {
-                // Fetch fresh data from all CSVs
-                console.log('Fetching fresh data for order confirmation...');
-                const freshConfig = await fetchConfig();
-                const freshDiscountCodes = await fetchDiscountCodes();
-                
-                // Check outlet status with fresh config
-                const tempConfig = config;
-                const tempDiscountCodes = discountCodes;
-                config = freshConfig;
-                discountCodes = freshDiscountCodes;
-                
-                const statusCheck = checkOutletStatus();
-                let locationCheck = await checkUserLocation();
-                
-                // If GPS check is 'yes', get fresh location at confirmation time
-                if (freshConfig['gps check'] && freshConfig['gps check'].toLowerCase() === 'yes') {
-                    console.log('GPS check is mandatory, requesting fresh location...');
-                    // Force fresh location check with high accuracy
-                    const freshLocationCheck = await new Promise((resolve) => {
-                        navigator.geolocation.getCurrentPosition(
-                            (position) => {
-                                const freshUserLocation = {
-                                    lat: position.coords.latitude,
-                                    lng: position.coords.longitude
-                                };
-                                
-                                console.log("Fresh user location at confirmation:", freshUserLocation);
-                                
-                                const distance = calculateDistance(
-                                    freshUserLocation.lat,
-                                    freshUserLocation.lng,
-                                    freshConfig.outletLocation.lat,
-                                    freshConfig.outletLocation.lng
-                                );
-                                
-                                console.log("Fresh distance:", distance.toFixed(2), "km");
-                                
-                                if (distance > freshConfig.deliveryRadius) {
-                                    resolve({ 
-                                        allowed: false, 
-                                        location: freshUserLocation,
-                                        distance: distance,
-                                        reason: `You are ${distance.toFixed(1)}km away. We deliver within ${freshConfig.deliveryRadius}km.` 
-                                    });
-                                } else {
-                                    resolve({ allowed: true, location: freshUserLocation, distance: distance });
-                                }
-                            },
-                            (error) => {
-                                console.error('Fresh location access error:', error);
-                                resolve({ 
-                                    allowed: false, 
-                                    reason: 'Unable to verify your location. Please enable location access and try again.' 
-                                });
-                            },
-                            {
-                                enableHighAccuracy: true,
-                                timeout: 10000,
-                                maximumAge: 0
-                            }
-                        );
-                    });
-                    
-                    // Update user location if we got fresh one
-                    if (freshLocationCheck.location) {
-                        userLocation = freshLocationCheck.location;
-                    }
-                    
-                    // Use fresh location check result
-                    if (!freshLocationCheck.allowed) {
-                        confirmationHTML += `
-                            <div style="background: #fee; border-left: 4px solid #d9534f; padding: 15px; margin-bottom: 15px; border-radius: 8px;">
-                                <h4 style="color: #d9534f; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-                                    <span>📍</span> Location Verification Failed
-                                </h4>
-                                <p style="color: #666; font-size: 0.95em; margin: 0;">${freshLocationCheck.reason}</p>
-                            </div>
-                        `;
-                        document.getElementById('confirmation-loading').style.display = 'none';
-                        document.getElementById('confirmation-content').innerHTML = confirmationHTML + '</div>';
-                        document.getElementById('confirmation-content').style.display = 'block';
-                        document.getElementById('cancel-order-btn').style.display = 'inline-block';
-                        return;
-                    }
-                }
-                
-                // Restore for normal operation
-                config = tempConfig;
-                discountCodes = tempDiscountCodes;
-                
-                console.log('Fresh status check:', statusCheck);
-                console.log('Fresh location check:', locationCheck);
-                console.log('Fresh discount codes:', freshDiscountCodes);
-                
-                // Build confirmation HTML
-                let confirmationHTML = '<div style="max-height: 60vh; overflow-y: auto;">';
-                
-                // Status checks
-                if (!statusCheck.open) {
-                    confirmationHTML += `
-                        <div style="background: #fee; border-left: 4px solid #d9534f; padding: 15px; margin-bottom: 15px; border-radius: 8px;">
-                            <h4 style="color: #d9534f; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-                                <span>🔒</span> Outlet Closed
-                            </h4>
-                            <p style="color: #666; font-size: 0.95em; margin: 0;">${statusCheck.reason}</p>
-                        </div>
-                    `;
-                    document.getElementById('confirmation-loading').style.display = 'none';
-                    document.getElementById('confirmation-content').innerHTML = confirmationHTML + '</div>';
-                    document.getElementById('confirmation-content').style.display = 'block';
-                    document.getElementById('cancel-order-btn').style.display = 'inline-block';
-                    return;
-                }
-                
-                if (!locationCheck.allowed) {
-                    confirmationHTML += `
-                        <div style="background: #fee; border-left: 4px solid #d9534f; padding: 15px; margin-bottom: 15px; border-radius: 8px;">
-                            <h4 style="color: #d9534f; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-                                <span>📍</span> Outside Delivery Range
-                            </h4>
-                            <p style="color: #666; font-size: 0.95em; margin: 0;">${locationCheck.reason}</p>
-                        </div>
-                    `;
-                    document.getElementById('confirmation-loading').style.display = 'none';
-                    document.getElementById('confirmation-content').innerHTML = confirmationHTML + '</div>';
-                    document.getElementById('confirmation-content').style.display = 'block';
-                    document.getElementById('cancel-order-btn').style.display = 'inline-block';
-                    return;
-                }
-                
-                // Outlet is open
-                confirmationHTML += `
-                    <div style="background: #efe; border-left: 4px solid #25D366; padding: 15px; margin-bottom: 15px; border-radius: 8px;">
-                        <h4 style="color: #25D366; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-                            <span>✓</span> Outlet Open
-                        </h4>
-                        <p style="color: #666; font-size: 0.9em; margin: 0;">Open from ${freshConfig['on time']} to ${freshConfig['off time']}</p>
-                    </div>
-                `;
-                
-                // Location info
-                if (userLocation && freshConfig.outletLocation) {
-                    const distance = calculateDistance(
-                        userLocation.lat,
-                        userLocation.lng,
-                        freshConfig.outletLocation.lat,
-                        freshConfig.outletLocation.lng
-                    );
-                    confirmationHTML += `
-                        <div style="background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px; margin-bottom: 15px; border-radius: 8px;">
-                            <h4 style="color: #4caf50; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-                                <span>📍</span> Delivery Location
-                            </h4>
-                            <p style="color: #666; font-size: 0.9em; margin: 5px 0;">Distance: <strong>${distance.toFixed(2)} km</strong></p>
-                            <p style="color: #666; font-size: 0.9em; margin: 5px 0;">Delivery radius: ${freshConfig.deliveryRadius} km</p>
-                            <a href="https://www.google.com/maps/?q=${userLocation.lat},${userLocation.lng}" target="_blank" style="color: #1976d2; font-size: 0.85em; text-decoration: none;">View on Map →</a>
-                        </div>
-                    `;
-                }
-                
-                // Discount verification
-                if (appliedDiscount) {
-                    const freshDiscountInfo = freshDiscountCodes[appliedDiscount];
-                    if (freshDiscountInfo) {
-                        confirmationHTML += `
-                            <div style="background: #fff3e0; border-left: 4px solid #ff9800; padding: 15px; margin-bottom: 15px; border-radius: 8px;">
-                                <h4 style="color: #ff9800; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-                                    <span>🎟️</span> Discount Code: ${appliedDiscount}
-                                </h4>
-                                <p style="color: #666; font-size: 0.9em; margin: 5px 0;">Discount: <strong>${freshDiscountInfo.discount}</strong></p>
-                                <p style="color: #666; font-size: 0.9em; margin: 5px 0;">Applied to: <strong>${freshDiscountInfo.category}</strong></p>
-                            </div>
-                        `;
-                    } else {
-                        confirmationHTML += `
-                            <div style="background: #fee; border-left: 4px solid #d9534f; padding: 15px; margin-bottom: 15px; border-radius: 8px;">
-                                <h4 style="color: #d9534f; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-                                    <span>⚠️</span> Invalid Discount Code
-                                </h4>
-                                <p style="color: #666; font-size: 0.9em; margin: 0;">Code "${appliedDiscount}" is no longer valid</p>
-                            </div>
-                        `;
-                    }
-                }
-                
-                // Order summary
-                confirmationHTML += `<h4 style="margin: 20px 0 10px 0; color: #333; border-bottom: 2px solid #eee; padding-bottom: 8px;">📋 Order Summary</h4>`;
-                cart.forEach(item => {
-                    confirmationHTML += `
-                        <div style="padding: 10px 0; border-bottom: 1px solid #f0f0f0;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                                <strong style="color: #333;">${item.quantity}x ${item.Name}</strong>
-                                <strong style="color: var(--primary-color);">₹${item.subtotal.toFixed(2)}</strong>
-                            </div>
-                    `;
-                    if (item.selectedAddons.length > 0) {
-                        confirmationHTML += '<div style="font-size: 0.85em; color: #666; margin-left: 15px;">';
-                        item.selectedAddons.forEach(addon => {
-                            confirmationHTML += `• ${addon.name}<br>`;
-                        });
-                        confirmationHTML += '</div>';
-                    }
-                    if (item.instructions) {
-                        confirmationHTML += `<div style="font-size: 0.85em; color: #d9534f; font-style: italic; margin-left: 15px;">"${item.instructions}"</div>`;
-                    }
-                    confirmationHTML += '</div>';
-                });
-                
-                // Calculate totals with fresh GST from fresh config
-                const { subtotal, discount, gst, grandTotal } = calculateTotals();
-                const freshGstRate = freshConfig['gst'] || freshConfig['gst%'] || '5%';
-                
-                confirmationHTML += `
-                    <div style="background: #fafafa; padding: 15px; margin-top: 15px; border-radius: 8px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                            <span style="color: #666;">Subtotal:</span>
-                            <span style="color: #333; font-weight: 600;">₹${subtotal.toFixed(2)}</span>
-                        </div>
-                `;
-                
-                if (discount > 0) {
-                    confirmationHTML += `
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: #25D366;">
-                            <span>Discount (${appliedDiscount}):</span>
-                            <span style="font-weight: 600;">-₹${discount.toFixed(2)}</span>
-                        </div>
-                    `;
-                }
-                
-                confirmationHTML += `
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                            <span style="color: #666;">GST (${freshGstRate}):</span>
-                            <span style="color: #333; font-weight: 600;">₹${gst.toFixed(2)}</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; padding-top: 12px; border-top: 2px solid #ddd; margin-top: 8px;">
-                            <span style="color: #333; font-size: 1.1em; font-weight: 700;">Grand Total:</span>
-                            <span style="color: var(--primary-color); font-size: 1.2em; font-weight: 700;">₹${grandTotal.toFixed(2)}</span>
-                        </div>
-                    </div>
-                `;
-                
-                const generalInstructions = document.getElementById('general-instructions').value.trim();
-                if (generalInstructions) {
-                    confirmationHTML += `
-                        <div style="margin-top: 15px; padding: 12px; background: #fff8e1; border-radius: 8px; border-left: 4px solid #ffc107;">
-                            <strong style="color: #f57c00; font-size: 0.9em;">General Instructions:</strong>
-                            <p style="margin: 8px 0 0 0; color: #666; font-size: 0.9em; font-style: italic;">"${generalInstructions}"</p>
-                        </div>
-                    `;
-                }
-                
-                confirmationHTML += '</div>';
-                
-                // Show confirmation
-                document.getElementById('confirmation-loading').style.display = 'none';
-                document.getElementById('confirmation-content').innerHTML = confirmationHTML;
-                document.getElementById('confirmation-content').style.display = 'block';
-                document.getElementById('confirm-send-btn').style.display = 'inline-block';
-                document.getElementById('cancel-order-btn').style.display = 'inline-block';
-                
-            } catch (error) {
-                console.error('Error during confirmation:', error);
-                document.getElementById('confirmation-loading').innerHTML = `
-                    <div style="color: #d9534f;">
-                        <div style="font-size: 3em; margin-bottom: 15px;">⚠️</div>
-                        <p style="font-size: 1.1em;">Error loading confirmation</p>
-                        <p style="font-size: 0.9em; color: #999;">Please try again</p>
-                    </div>
-                `;
-                document.getElementById('cancel-order-btn').style.display = 'inline-block';
-            }
-        });
-
-        document.addEventListener('click', (e) => {
-            if (e.target && e.target.id === 'apply-discount-btn') {
-                applyDiscountCode();
-            }
-        });
-        
-        // Handle Apply button click via event delegation
         document.getElementById('apply-discount-btn').addEventListener('click', applyDiscountCode);
 
         // Search functionality
-        searchInput.addEventListener('input', (e) => {
+        document.getElementById('search-input').addEventListener('input', (e) => {
             searchQuery = e.target.value.trim();
-            
+            const clearBtn = document.getElementById('clear-search');
             if (searchQuery) {
-                clearSearchBtn.classList.add('visible');
+                clearBtn.classList.add('visible');
             } else {
-                clearSearchBtn.classList.remove('visible');
+                clearBtn.classList.remove('visible');
+            }
+            renderCategories();
+        });
+        
+        document.getElementById('clear-search').addEventListener('click', () => {
+            document.getElementById('search-input').value = '';
+            searchQuery = '';
+            document.getElementById('clear-search').classList.remove('visible');
+            renderCategories();
+        });
+
+        // Get user location
+        async function getUserLocation() {
+            if (!config.outletLocation) return;
+            
+            return new Promise((resolve) => {
+                if (!navigator.geolocation) {
+                    resolve();
+                    return;
+                }
+                
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        userLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        console.log('✓ User location obtained');
+                        resolve();
+                    },
+                    (error) => {
+                        console.log('Location access denied or unavailable');
+                        resolve();
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            });
+        }
+
+        // Initialize app
+        async function initApp() {
+            deviceId = getDeviceId();
+            console.log('✓ Device ID:', deviceId);
+            
+            loadCustomerDetails();
+            getTableNumberFromURL();
+            
+            console.log('Loading configuration...');
+            config = await fetchConfig();
+            console.log('✓ Config loaded');
+            
+            console.log('Loading discount codes...');
+            discountCodes = await fetchDiscountCodes();
+            console.log('✓ Discount codes loaded');
+            
+            console.log('Loading menu items...');
+            menuItems = await fetchAndParseCSV(MENU_CSV_URL);
+            console.log('✓ Menu items loaded:', menuItems.length);
+            
+            // Update brand name in header
+            document.getElementById('brand-name').textContent = brandName;
+            
+            if (menuItems.length === 0) {
+                document.getElementById('item-list-main').innerHTML = '<p style="padding: 20px; text-align: center; color: #d9534f;">Error loading menu. Please refresh.</p>';
+                return;
             }
             
             renderCategories();
-        });
-        
-        clearSearchBtn.addEventListener('click', () => {
-            searchInput.value = '';
-            searchQuery = '';
-            clearSearchBtn.classList.remove('visible');
-            renderCategories();
-        });
-
-        getTableNumberFromURL();
-        
-        // Auto-hide address bar on mobile browsers
-        function hideAddressBar() {
-            if (!window.location.hash) {
-                if (document.height < window.outerHeight) {
-                    document.body.style.height = (window.outerHeight + 50) + 'px';
-                }
-                setTimeout(() => {
-                    window.scrollTo(0, 1);
-                }, 50);
-            }
-        }
-        
-        window.addEventListener('load', hideAddressBar);
-        window.addEventListener('orientationchange', () => {
-            setTimeout(hideAddressBar, 200);
-        });
-
-        // Request fullscreen on user interaction (for Android)
-        function requestFullScreen() {
-            const elem = document.documentElement;
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen().catch(err => console.log('Fullscreen request failed:', err));
-            } else if (elem.webkitRequestFullscreen) {
-                elem.webkitRequestFullscreen();
-            } else if (elem.mozRequestFullScreen) {
-                elem.mozRequestFullScreen();
-            } else if (elem.msRequestFullscreen) {
-                elem.msRequestFullscreen();
-            }
+            
+            // Fetch customer details from backend
+            await fetchCustomerDetails();
+            
+            // Get user location
+            await getUserLocation();
+            
+            // Start order status refresh
+            startOrderStatusRefresh();
+            
+            console.log('✓ App initialized successfully');
         }
 
-        // Trigger fullscreen on first user interaction
-        let hasInteracted = false;
-        const triggerFullScreen = () => {
-            if (!hasInteracted) {
-                hasInteracted = true;
-                requestFullScreen();
-            }
-        };
-
-        document.addEventListener('touchstart', triggerFullScreen, { once: true });
-        document.addEventListener('click', triggerFullScreen, { once: true });
-        
-        document.body.addEventListener('touchmove', (e) => {
-            if (e.target === document.body) {
-                e.preventDefault();
-            }
-        }, { passive: false });
-
-        function setViewportHeight() {
-            const vh = window.innerHeight * 0.01;
-            document.documentElement.style.setProperty('--vh', `${vh}px`);
-        }
-        
-        setViewportHeight();
-        window.addEventListener('resize', setViewportHeight);
-        window.addEventListener('orientationchange', setViewportHeight);
-
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', (e) => {
-            const now = Date.now();
-            if (now - lastTouchEnd <= 300) {
-                e.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
-        
-        
-        // Initialize app
-        checkLoginStatus();
-        
-        // Initialize Google Sign-In when script loads
-        window.addEventListener('load', function() {
-            setTimeout(() => {
-                initGoogleSignIn();
-            }, 500);
-        });
-        
-    }); // End of DOMContentLoaded
-    
-    })(); // End of async IIFE
+        initApp();
+    });
     </script>
-</body>
-</html>
 </body>
 </html>
