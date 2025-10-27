@@ -70,6 +70,22 @@
             align-items: center;
             gap: 5px;
             min-height: 36px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .orders-btn.ready-blink {
+            animation: blink-green 1s infinite;
+            background: #25D366;
+        }
+        @keyframes blink-green {
+            0%, 100% { 
+                background: #25D366;
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+            }
+            50% { 
+                background: #1ea952;
+                box-shadow: 0 0 20px 5px rgba(37, 211, 102, 0.5);
+            }
         }
         .badge {
             background: white;
@@ -492,6 +508,7 @@
         let brandName = 'Our Menu';
         let whatsappNumber = '7011847629';
         let orderCheckInterval = null;
+        let lastReadyOrderId = null; // Track last ready order to show notification once
 
         // Device ID Management
         function getDeviceId() {
@@ -551,14 +568,27 @@
 
         function updateOrdersBadge(orders) {
             const badge = document.getElementById('orders-badge');
+            const ordersBtn = document.getElementById('my-orders-btn');
+            
             const activeOrders = orders.filter(o => 
                 o.status === 'Pending' || o.status === 'Preparing' || o.status === 'Ready'
             );
+            
+            // Check if any order is Ready
+            const hasReadyOrder = orders.some(o => o.status === 'Ready');
+            
             if (activeOrders.length > 0) {
                 badge.textContent = activeOrders.length;
                 badge.style.display = 'inline-block';
             } else {
                 badge.style.display = 'none';
+            }
+            
+            // Add or remove blink animation
+            if (hasReadyOrder) {
+                ordersBtn.classList.add('ready-blink');
+            } else {
+                ordersBtn.classList.remove('ready-blink');
             }
         }
 
