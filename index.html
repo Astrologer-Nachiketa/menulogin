@@ -87,6 +87,26 @@
                 box-shadow: 0 0 20px 5px rgba(37, 211, 102, 0.5);
             }
         }
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
         .badge {
             background: white;
             color: var(--primary-color);
@@ -174,6 +194,123 @@
             font-size: clamp(0.95em, 3.5vw, 1em);
             margin-bottom: 5px;
         }
+        .info-icon {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.75em;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 8px;
+            flex-shrink: 0;
+            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.2s;
+        }
+        
+        .info-icon:active {
+            transform: scale(0.9);
+        }
+        
+        .description-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 240;
+            display: none;
+        }
+        
+        .description-modal-overlay.visible {
+            display: block;
+        }
+        
+        .description-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 16px;
+            padding: 0;
+            max-width: 95%;
+            width: 95%;
+            max-height: 85vh;
+            overflow: hidden;
+            z-index: 250;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            animation: fadeIn 0.2s ease-out;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -48%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+        
+        .description-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 2px solid #eee;
+            flex-shrink: 0;
+        }
+        
+        .description-title {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .description-close {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            color: #888;
+            cursor: pointer;
+            min-width: 30px;
+            min-height: 30px;
+        }
+        
+        .description-content {
+            color: #333;
+            line-height: 1.6;
+            font-size: 0.95em;
+            overflow-y: auto;
+            flex-grow: 1;
+            padding: 0;
+        }
+        
+        .description-content img {
+            width: 100%;
+            display: block;
+            margin: 0;
+        }
+        
+        .description-content p {
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .description-content > div {
+            margin: 0;
+        }
+        
         .attribute-icon {
             width: 14px;
             height: 14px;
@@ -247,6 +384,7 @@
             transition: transform 0.3s;
             z-index: 50;
             box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
+            pointer-events: auto;
         }
         .cart-summary.visible { transform: translateY(0); }
         #view-order-btn {
@@ -258,6 +396,13 @@
             font-weight: 700;
             cursor: pointer;
             min-height: 44px;
+            pointer-events: auto;
+            z-index: 51;
+            position: relative;
+        }
+        #view-order-btn:active {
+            transform: scale(0.95);
+            background: #f0f0f0;
         }
         .modal-overlay {
             position: fixed;
@@ -335,6 +480,63 @@
             margin-bottom: 15px;
             border-left: 4px solid var(--primary-color);
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.2s;
+            pointer-events: auto;
+            user-select: none;
+        }
+        .order-status-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+        .order-status-card.expanded {
+            border-left-width: 6px;
+        }
+        .order-status-header,
+        .order-details {
+            cursor: pointer;
+            pointer-events: auto;
+        }
+        .order-status-header:active,
+        .order-details:active {
+            opacity: 0.7;
+        }
+        .order-items-details {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            display: none;
+            pointer-events: auto;
+            cursor: default;
+        }
+        .order-items-details.visible {
+            display: block;
+        }
+        .order-item-row {
+            padding: 8px 0;
+            border-bottom: 1px solid #f5f5f5;
+            font-size: 0.9em;
+        }
+        .order-item-row:last-child {
+            border-bottom: none;
+        }
+        .refresh-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #e0e0e0;
+            z-index: 9999;
+            display: none;
+        }
+        .refresh-progress.active {
+            display: block;
+        }
+        .refresh-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #25D366, #1ea952);
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(37, 211, 102, 0.5);
         }
         .order-status-header {
             display: flex;
@@ -395,6 +597,11 @@
 </head>
 <body>
     <div class="phone-wrapper">
+        <!-- Refresh Progress Bar -->
+        <div class="refresh-progress" id="refresh-progress">
+            <div class="refresh-progress-bar" id="refresh-progress-bar"></div>
+        </div>
+        
         <div class="app-container">
             <header class="header">
                 <h1><span id="brand-name">Our Menu</span> <span id="table-number-display"></span></h1>
@@ -457,6 +664,11 @@
             </div>
         </div>
 
+        <!-- Customization Modal for Add-ons -->
+        <div class="modal-overlay" id="customization-modal-overlay">
+            <div class="modal" id="customization-modal-content"></div>
+        </div>
+
         <!-- Cart Modal -->
         <div class="modal-overlay" id="cart-modal-overlay">
             <div class="modal">
@@ -479,12 +691,23 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Description Modal for Item Info -->
+        <div class="description-modal-overlay" id="description-modal-overlay">
+            <div class="description-modal" id="description-modal">
+                <div class="description-header">
+                    <div class="description-title" id="description-title"></div>
+                    <button class="description-close" id="description-close">&times;</button>
+                </div>
+                <div class="description-content" id="description-content"></div>
+            </div>
+        </div>
     </div>
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // ⚠️ IMPORTANT: Replace with your Apps Script Web App URL
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyOGeGZUFy4a5SYazlMwnpkKWmjKlJvZ-tZ6_PUskzhWFtsJnM-O5Mgg8Sl9i1-e09l/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzuxKmKEKaLnNPf72XWYOd850QI2biDk2Z8KyDo5mhVvhYow3uMOhaaEuTCWFUYAPsq/exec';
         
         let GST_RATE = 0.05;
         let deviceId = null;
@@ -497,9 +720,12 @@
         const DISCOUNT_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlM6BGIWdct_szKaONKItArAjOzdEgw-780Qha42rhQNY4_xZ15x8VxzRzzEhlUz8CDGsSY4wbjrip/pub?gid=278622700&single=true&output=csv';
 
         let menuItems = [];
+        let addons = [];
         let config = {};
         let discountCodes = {};
         let cart = [];
+        let currentItemForModal = null;
+        let editingCartItemIndex = null;
         let activeCategory = null;
         let tableNumber = null;
         let appliedDiscount = null;
@@ -509,6 +735,8 @@
         let whatsappNumber = '7011847629';
         let orderCheckInterval = null;
         let lastReadyOrderId = null; // Track last ready order to show notification once
+        let isRefreshing = false; // Prevent multiple simultaneous refreshes
+        let myOrdersModalOpen = false; // Track if orders modal is open
 
         // Device ID Management
         function getDeviceId() {
@@ -553,17 +781,136 @@
         }
 
         async function checkOrderStatus() {
+            if (isRefreshing) return []; // Prevent concurrent requests
+            
             try {
+                isRefreshing = true;
+                
+                // Show progress bar only if orders modal is NOT open
+                if (!myOrdersModalOpen) {
+                    showRefreshProgress();
+                }
+                
                 const response = await fetch(`${APPS_SCRIPT_URL}?action=checkOrderStatus&deviceId=${deviceId}`);
                 const data = await response.json();
+                
                 if (data.status === 'success') {
                     updateOrdersBadge(data.orders);
+                    
+                    // Check for newly ready orders and show notification
+                    const readyOrders = data.orders.filter(o => o.status === 'Ready');
+                    if (readyOrders.length > 0) {
+                        const latestReadyOrder = readyOrders[0];
+                        if (lastReadyOrderId !== latestReadyOrder.orderId) {
+                            lastReadyOrderId = latestReadyOrder.orderId;
+                            showReadyNotification(latestReadyOrder);
+                        }
+                    }
+                    
                     return data.orders;
                 }
             } catch (error) {
                 console.error('Error checking order status:', error);
+            } finally {
+                isRefreshing = false;
+                hideRefreshProgress();
             }
             return [];
+        }
+        
+        function showRefreshProgress() {
+            const progress = document.getElementById('refresh-progress');
+            const bar = document.getElementById('refresh-progress-bar');
+            progress.classList.add('active');
+            bar.style.width = '0%';
+            
+            // Animate to 90% over 0.5 seconds
+            setTimeout(() => {
+                bar.style.width = '90%';
+            }, 50);
+        }
+        
+        function hideRefreshProgress() {
+            const progress = document.getElementById('refresh-progress');
+            const bar = document.getElementById('refresh-progress-bar');
+            
+            // Complete to 100%
+            bar.style.width = '100%';
+            
+            // Hide after animation
+            setTimeout(() => {
+                progress.classList.remove('active');
+                bar.style.width = '0%';
+            }, 300);
+        }
+        
+        function showReadyNotification(order) {
+            // Browser notification if permitted
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('🎉 Your Order is Ready!', {
+                    body: `Order ${order.orderId} is ready for pickup/delivery!`,
+                    icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="75" font-size="75">✅</text></svg>',
+                    requireInteraction: true
+                });
+            }
+            
+            // Visual alert on page
+            const alertDiv = document.createElement('div');
+            alertDiv.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                background: #25D366;
+                color: white;
+                padding: 20px 25px;
+                border-radius: 15px;
+                box-shadow: 0 8px 24px rgba(37, 211, 102, 0.4);
+                z-index: 9999;
+                animation: slideInRight 0.5s ease-out;
+                max-width: 300px;
+                font-weight: 600;
+            `;
+            alertDiv.innerHTML = `
+                <div style="font-size: 1.2em; margin-bottom: 8px;">🎉 Order Ready!</div>
+                <div style="font-size: 0.9em; opacity: 0.95;">Your order ${order.orderId} is ready!</div>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            // Play notification sound (simple beep using Web Audio API)
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {
+                console.log('Audio notification not supported');
+            }
+            
+            // Remove alert after 5 seconds
+            setTimeout(() => {
+                alertDiv.style.animation = 'slideOutRight 0.5s ease-out';
+                setTimeout(() => alertDiv.remove(), 500);
+            }, 5000);
+        }
+        
+        // Request notification permission on load
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission().then(permission => {
+                    console.log('Notification permission:', permission);
+                });
+            }
         }
 
         function updateOrdersBadge(orders) {
@@ -593,59 +940,272 @@
         }
 
         async function showMyOrders() {
-            document.getElementById('my-orders-modal').classList.add('visible');
-            document.getElementById('orders-list').innerHTML = '<p style="text-align: center; color: #999;">Loading orders...</p>';
-            
-            const orders = await checkOrderStatus();
+            myOrdersModalOpen = true;
+            const modal = document.getElementById('my-orders-modal');
             const ordersList = document.getElementById('orders-list');
-            ordersList.innerHTML = '';
             
-            if (orders.length === 0) {
-                ordersList.innerHTML = '<p style="text-align: center; color: #999; padding: 40px 20px;">No orders yet</p>';
+            // Show modal with loading state
+            modal.classList.add('visible');
+            ordersList.innerHTML = '<div style="text-align: center; padding: 60px 20px;"><div style="font-size: 3em; margin-bottom: 15px;">⏳</div><p style="color: #999; font-size: 1em;">Loading your orders...</p></div>';
+            
+            try {
+                // Wait for the API call to complete
+                const orders = await checkOrderStatus();
+                
+                // Clear the loading state
+                ordersList.innerHTML = '';
+                
+                // Check if we actually got orders
+                if (!orders || orders.length === 0) {
+                    ordersList.innerHTML = '<div style="text-align: center; padding: 60px 20px;"><div style="font-size: 3em; margin-bottom: 15px;">📋</div><p style="color: #999; font-size: 1em;">No orders yet</p><p style="color: #999; font-size: 0.85em; margin-top: 10px;">Your order history will appear here</p></div>';
+                    return;
+                }
+                
+                // Render all orders
+                orders.forEach(order => {
+                    const orderCard = document.createElement('div');
+                    orderCard.className = 'order-status-card';
+                    orderCard.dataset.orderId = order.orderId;
+                    orderCard.style.cursor = 'pointer';
+                    orderCard.setAttribute('onclick', `console.log('Inline click works for ${order.orderId}')`);
+                    
+                    const statusClass = order.status.toLowerCase();
+                    const statusEmoji = {
+                        'pending': '⏳',
+                        'preparing': '👨‍🍳',
+                        'ready': '✅',
+                        'delivered': '📦'
+                    }[statusClass] || '📋';
+                    
+                    const formattedDate = new Date(order.timestamp).toLocaleString('en-IN', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    orderCard.innerHTML = `
+                        <div class="order-status-header" style="pointer-events: auto;">
+                            <div class="order-id">${order.orderId}</div>
+                            <div class="order-status ${statusClass}">${statusEmoji} ${order.status}</div>
+                        </div>
+                        <div class="order-details" style="pointer-events: auto;">
+                            <div>Date: ${formattedDate}</div>
+                            ${order.tableNumber ? `<div>Table: ${order.tableNumber}</div>` : ''}
+                            <div class="order-total">Total: ₹${order.grandTotal.toFixed(2)}</div>
+                            <div style="margin-top: 8px; font-size: 0.85em; color: var(--primary-color); font-weight: 600;">👆 Tap to view details ▼</div>
+                        </div>
+                        <div class="order-items-details" id="details-${order.orderId}" style="pointer-events: none;">
+                            <div style="text-align: center; color: #999; padding: 10px;">Tap above to load details</div>
+                        </div>
+                    `;
+                    
+                    // Add click handler only to header and details section, not the expanded area
+                    const headerSection = orderCard.querySelector('.order-status-header');
+                    const detailsSection = orderCard.querySelector('.order-details');
+                    
+                    const clickHandler = function(e) {
+                        e.stopPropagation();
+                        console.log('Order clicked:', order.orderId);
+                        toggleOrderDetails(order.orderId);
+                    };
+                    
+                    headerSection.onclick = clickHandler;
+                    detailsSection.onclick = clickHandler;
+                    headerSection.addEventListener('touchend', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleOrderDetails(order.orderId);
+                    });
+                    detailsSection.addEventListener('touchend', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleOrderDetails(order.orderId);
+                    });
+                    
+                    ordersList.appendChild(orderCard);
+                });
+                
+                console.log(`✓ Displayed ${orders.length} orders`);
+                
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                ordersList.innerHTML = '<div style="text-align: center; padding: 60px 20px;"><div style="font-size: 3em; margin-bottom: 15px;">⚠️</div><p style="color: #d9534f; font-size: 1em;">Error loading orders</p><p style="color: #999; font-size: 0.85em; margin-top: 10px;">Please try again</p></div>';
+            }
+        }
+        
+        async function toggleOrderDetails(orderId) {
+            const detailsDiv = document.getElementById(`details-${orderId}`);
+            const orderCard = document.querySelector(`[data-order-id="${orderId}"]`);
+            
+            console.log('Toggle order details for:', orderId);
+            console.log('Details div:', detailsDiv);
+            console.log('Order card:', orderCard);
+            
+            if (detailsDiv.classList.contains('visible')) {
+                // Collapse
+                detailsDiv.classList.remove('visible');
+                orderCard.classList.remove('expanded');
                 return;
             }
             
-            orders.forEach(order => {
-                const orderCard = document.createElement('div');
-                orderCard.className = 'order-status-card';
-                const statusClass = order.status.toLowerCase();
-                const statusEmoji = {
-                    'pending': '⏳',
-                    'preparing': '👨‍🍳',
-                    'ready': '✅',
-                    'delivered': '📦'
-                }[statusClass] || '📋';
+            // Expand - fetch full order details from backend
+            detailsDiv.classList.add('visible');
+            orderCard.classList.add('expanded');
+            
+            // If already loaded, don't fetch again
+            if (detailsDiv.dataset.loaded === 'true') {
+                console.log('Order details already loaded');
+                return;
+            }
+            
+            // Show loading state
+            detailsDiv.innerHTML = '<div style="text-align: center; color: #999; padding: 10px;">Loading order details...</div>';
+            
+            try {
+                console.log('Fetching order details from:', `${APPS_SCRIPT_URL}?action=getOrderDetails&orderId=${orderId}`);
+                const response = await fetch(`${APPS_SCRIPT_URL}?action=getOrderDetails&orderId=${orderId}`);
+                const data = await response.json();
                 
-                const formattedDate = new Date(order.timestamp).toLocaleString('en-IN', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
+                console.log('Order details response:', data);
                 
-                orderCard.innerHTML = `
-                    <div class="order-status-header">
-                        <div class="order-id">${order.orderId}</div>
-                        <div class="order-status ${statusClass}">${statusEmoji} ${order.status}</div>
-                    </div>
-                    <div class="order-details">
-                        <div>Date: ${formattedDate}</div>
-                        ${order.tableNumber ? `<div>Table: ${order.tableNumber}</div>` : ''}
-                        <div class="order-total">Total: ₹${order.grandTotal.toFixed(2)}</div>
-                    </div>
-                `;
-                ordersList.appendChild(orderCard);
-            });
+                if (data.status === 'success' && data.order) {
+                    const order = data.order;
+                    let orderItems = [];
+                    
+                    // Handle both naming conventions from backend
+                    const orderItemsData = order.orderItems || order.Order_Items || order['Order_Items_(JSON_string)'];
+                    
+                    try {
+                        if (typeof orderItemsData === 'string') {
+                            orderItems = JSON.parse(orderItemsData);
+                        } else if (Array.isArray(orderItemsData)) {
+                            orderItems = orderItemsData;
+                        }
+                        console.log('Parsed order items:', orderItems);
+                    } catch (e) {
+                        console.error('Error parsing order items:', e);
+                        console.log('Raw order items:', orderItemsData);
+                    }
+                    
+                    let itemsHtml = '<div style="font-weight: 600; margin-bottom: 10px; color: #333; font-size: 1em;">📋 Order Items:</div>';
+                    
+                    if (orderItems && orderItems.length > 0) {
+                        orderItems.forEach(item => {
+                            const itemSubtotal = item.subtotal || (item.price * item.quantity);
+                            itemsHtml += `
+                                <div class="order-item-row">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                        <span style="font-weight: 600;">${item.quantity}x ${item.name}</span>
+                                        <span style="color: var(--primary-color); font-weight: 600;">₹${itemSubtotal.toFixed(2)}</span>
+                                    </div>
+                            `;
+                            
+                            if (item.addons && item.addons.length > 0) {
+                                itemsHtml += '<div style="font-size: 0.85em; color: #666; margin-left: 15px; margin-top: 4px;">';
+                                item.addons.forEach(addon => {
+                                    itemsHtml += `├─ ${addon.name} (+₹${addon.price})<br>`;
+                                });
+                                itemsHtml += '</div>';
+                            }
+                            
+                            if (item.instructions && item.instructions.trim()) {
+                                itemsHtml += `<div style="font-size: 0.85em; color: #d9534f; font-style: italic; margin-left: 15px; margin-top: 4px;">📝 Item Note: "${item.instructions}"</div>`;
+                            }
+                            
+                            itemsHtml += '</div>';
+                        });
+                    } else {
+                        itemsHtml += '<div style="color: #999; font-size: 0.9em;">No items found</div>';
+                    }
+                    
+                    // Handle general instructions with both naming conventions
+                    const generalInstructions = order.generalInstructions || order.General_Instructions || '';
+                    if (generalInstructions && generalInstructions.trim()) {
+                        itemsHtml += `
+                            <div style="margin-top: 15px; padding: 12px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
+                                <div style="font-weight: 600; color: #856404; margin-bottom: 5px; font-size: 0.9em;">🔔 GENERAL NOTE:</div>
+                                <div style="font-size: 0.9em; color: #856404; font-style: italic;">"${generalInstructions}"</div>
+                            </div>
+                        `;
+                    }
+                    
+                    // Add pricing breakdown - handle both naming conventions
+                    const subtotal = order.subtotal || order.Subtotal || 0;
+                    const discount = order.discount || order.Discount || 0;
+                    const gst = order.gst || order.GST || 0;
+                    const grandTotal = order.grandTotal || order.Grand_Total || 0;
+                    
+                    itemsHtml += `
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #eee;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.9em;">
+                                <span>Subtotal:</span>
+                                <span>₹${parseFloat(subtotal).toFixed(2)}</span>
+                            </div>
+                            ${parseFloat(discount) > 0 ? `
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px; color: #25D366; font-size: 0.9em;">
+                                <span>Discount:</span>
+                                <span>-₹${parseFloat(discount).toFixed(2)}</span>
+                            </div>
+                            ` : ''}
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.9em;">
+                                <span>GST:</span>
+                                <span>₹${parseFloat(gst).toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.1em; color: var(--primary-color); margin-top: 8px; padding-top: 8px; border-top: 1px solid #ddd;">
+                                <span>Grand Total:</span>
+                                <span>₹${parseFloat(grandTotal).toFixed(2)}</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Add customer details - handle both naming conventions
+                    const customerPhone = order.customerPhone || order.Customer_Phone;
+                    const customerAddress = order.customerAddress || order.Customer_Address;
+                    
+                    if (customerPhone || customerAddress) {
+                        itemsHtml += `
+                            <div style="margin-top: 15px; padding: 12px; background: #f8f9fa; border-radius: 8px; font-size: 0.9em;">
+                                <div style="font-weight: 600; margin-bottom: 8px; color: #333;">👤 Customer Info:</div>
+                                ${customerPhone ? `<div style="color: #666;">📞 ${customerPhone}</div>` : ''}
+                                ${customerAddress ? `<div style="color: #666; margin-top: 4px;">📍 ${customerAddress}</div>` : ''}
+                            </div>
+                        `;
+                    }
+                    
+                    detailsDiv.innerHTML = itemsHtml;
+                    detailsDiv.dataset.loaded = 'true';
+                } else {
+                    detailsDiv.innerHTML = '<div style="color: #d9534f; text-align: center; padding: 10px;">Error: ' + (data.message || 'Could not load order details') + '</div>';
+                }
+            } catch (error) {
+                console.error('Error fetching order details:', error);
+                detailsDiv.innerHTML = '<div style="color: #d9534f; text-align: center; padding: 10px;">Network error loading order details</div>';
+            }
         }
 
         function startOrderStatusRefresh() {
             if (orderCheckInterval) clearInterval(orderCheckInterval);
+            
+            // Don't start if device ID not set
+            if (!deviceId) {
+                console.log('Cannot start order refresh: Device ID not set');
+                return;
+            }
+            
+            console.log('✓ Starting order status refresh');
+            
+            // Check immediately
             checkOrderStatus();
+            
+            // Then check every 10 seconds
             orderCheckInterval = setInterval(() => {
                 checkOrderStatus();
-                if (document.getElementById('my-orders-modal').classList.contains('visible')) {
-                    showMyOrders();
+                
+                // If orders modal is open, refresh the list but keep it open
+                if (myOrdersModalOpen && document.getElementById('my-orders-modal').classList.contains('visible')) {
+                    // Silently update badge, but don't reload the full modal to avoid closing
                 }
             }, 10000); // Check every 10 seconds
         }
@@ -701,6 +1261,65 @@
             }
         });
 
+        // Add "Edit Details" button to cart modal
+        function showEditDetailsButton() {
+            const cartModalFooter = document.querySelector('#cart-modal-overlay .modal-footer');
+            let editBtn = document.getElementById('edit-details-btn');
+            
+            if (!editBtn) {
+                editBtn = document.createElement('button');
+                editBtn.id = 'edit-details-btn';
+                editBtn.textContent = '✏️ Edit My Details';
+                editBtn.style.cssText = `
+                    background: #5bc0de;
+                    color: white;
+                    border: none;
+                    padding: 12px 24px;
+                    border-radius: 25px;
+                    font-weight: 700;
+                    cursor: pointer;
+                    font-size: 0.95em;
+                    margin-bottom: 10px;
+                    width: 100%;
+                `;
+                editBtn.addEventListener('click', () => {
+                    document.getElementById('cart-modal-overlay').classList.remove('visible');
+                    showCustomerDetailsModal();
+                });
+                
+                // Insert before place order button
+                const placeOrderBtn = document.getElementById('place-order-btn');
+                placeOrderBtn.parentElement.insertBefore(editBtn, placeOrderBtn);
+            }
+            
+            // Show customer details summary above edit button
+            if (customerDetails) {
+                let detailsSummary = document.getElementById('customer-details-summary');
+                if (!detailsSummary) {
+                    detailsSummary = document.createElement('div');
+                    detailsSummary.id = 'customer-details-summary';
+                    detailsSummary.style.cssText = `
+                        background: #f8f9fa;
+                        padding: 15px;
+                        border-radius: 8px;
+                        margin-bottom: 15px;
+                        font-size: 0.9em;
+                    `;
+                    const placeOrderBtn = document.getElementById('place-order-btn');
+                    placeOrderBtn.parentElement.insertBefore(detailsSummary, editBtn);
+                }
+                
+                detailsSummary.innerHTML = `
+                    <div style="font-weight: 600; margin-bottom: 8px; color: #333;">📋 Delivery Details:</div>
+                    <div style="color: #666; line-height: 1.6;">
+                        <div><strong>Name:</strong> ${customerDetails.name}</div>
+                        <div><strong>Phone:</strong> ${customerDetails.phone}</div>
+                        <div><strong>Address:</strong> ${customerDetails.address}</div>
+                    </div>
+                `;
+            }
+        }
+
         document.getElementById('place-order-btn').addEventListener('click', () => {
             if (cart.length === 0) {
                 alert('Your cart is empty!');
@@ -714,11 +1333,34 @@
                 submitOrderToBackend();
             }
         });
+        
+        // Close orders modal handler - set flag
+        document.getElementById('close-orders-modal').addEventListener('click', () => {
+            myOrdersModalOpen = false;
+            document.getElementById('my-orders-modal').classList.remove('visible');
+        });
 
         async function submitOrderToBackend() {
             const placeOrderBtn = document.getElementById('place-order-btn');
             placeOrderBtn.disabled = true;
             placeOrderBtn.textContent = 'Submitting Order...';
+            
+            // Check outlet status and location before submitting
+            const statusCheck = checkOutletStatus();
+            if (!statusCheck.open) {
+                alert(`⚠️ Cannot place order\n\n${statusCheck.reason}`);
+                placeOrderBtn.disabled = false;
+                placeOrderBtn.textContent = 'Place Order';
+                return;
+            }
+            
+            const locationCheck = await checkUserLocation();
+            if (!locationCheck.allowed) {
+                alert(`⚠️ Cannot place order\n\n${locationCheck.reason}`);
+                placeOrderBtn.disabled = false;
+                placeOrderBtn.textContent = 'Place Order';
+                return;
+            }
             
             try {
                 const { subtotal, discount, gst, grandTotal } = calculateTotals();
@@ -853,6 +1495,7 @@
         // Event listeners
         document.getElementById('my-orders-btn').addEventListener('click', showMyOrders);
         document.getElementById('close-orders-modal').addEventListener('click', () => {
+            myOrdersModalOpen = false;
             document.getElementById('my-orders-modal').classList.remove('visible');
         });
         document.getElementById('close-customer-modal').addEventListener('click', () => {
@@ -862,9 +1505,53 @@
         document.getElementById('close-cart-modal').addEventListener('click', () => {
             document.getElementById('cart-modal-overlay').classList.remove('visible');
         });
-        document.getElementById('view-order-btn').addEventListener('click', () => {
-            renderCartModal();
-            document.getElementById('cart-modal-overlay').classList.add('visible');
+        
+        // View Order button - using event delegation to ensure it always works
+        const cartSummaryBar = document.getElementById('cart-summary-bar');
+        cartSummaryBar.addEventListener('click', (e) => {
+            console.log('Cart summary clicked', e.target);
+            if (e.target.id === 'view-order-btn' || e.target.closest('#view-order-btn')) {
+                console.log('View Order button triggered');
+                renderCartModal();
+                showEditDetailsButton();
+                document.getElementById('cart-modal-overlay').classList.add('visible');
+            }
+        });
+        
+        // Also add direct listener as backup
+        const viewOrderBtn = document.getElementById('view-order-btn');
+        if (viewOrderBtn) {
+            viewOrderBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                console.log('Direct view order click');
+                renderCartModal();
+                showEditDetailsButton();
+                document.getElementById('cart-modal-overlay').classList.add('visible');
+            });
+        }
+        
+        // Modal overlay click handlers (close on overlay click)
+        document.getElementById('customization-modal-overlay').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('customization-modal-overlay')) {
+                closeCustomizationModal();
+            }
+        });
+        document.getElementById('cart-modal-overlay').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('cart-modal-overlay')) {
+                document.getElementById('cart-modal-overlay').classList.remove('visible');
+            }
+        });
+        document.getElementById('customer-details-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('customer-details-modal')) {
+                document.getElementById('customer-details-modal').classList.remove('visible');
+                pendingOrderSubmission = false;
+            }
+        });
+        document.getElementById('my-orders-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('my-orders-modal')) {
+                myOrdersModalOpen = false;
+                document.getElementById('my-orders-modal').classList.remove('visible');
+            }
         });
 
         // CSV Parsing
@@ -983,6 +1670,161 @@
                       Math.sin(dLon/2) * Math.sin(dLon/2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
             return R * c;
+        }
+
+        function checkOutletStatus() {
+            if (!config['on time'] || !config['off time']) {
+                console.log('No time configuration found, outlet open by default');
+                return { open: true };
+            }
+            
+            const now = new Date();
+            const currentTime = now.getHours() * 60 + now.getMinutes();
+            const currentDay = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][now.getDay()];
+            const currentDate = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()}`;
+            const currentDateSlash = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+            
+            console.log('Checking outlet status...');
+            console.log('Current time (minutes):', currentTime);
+            console.log('Current day:', currentDay);
+            
+            // Parse opening time
+            const onTimeParts = config['on time'].split(':');
+            const onHour = parseInt(onTimeParts[0]);
+            const onMin = onTimeParts[1] ? parseInt(onTimeParts[1]) : 0;
+            const onTime = onHour * 60 + onMin;
+            
+            // Parse closing time
+            const offTimeParts = config['off time'].split(':');
+            const offHour = parseInt(offTimeParts[0]);
+            const offMin = offTimeParts[1] ? parseInt(offTimeParts[1]) : 0;
+            const offTime = offHour * 60 + offMin;
+            
+            // Check time
+            if (currentTime < onTime || currentTime > offTime) {
+                return { 
+                    open: false, 
+                    reason: `We're open from ${config['on time']} to ${config['off time']}` 
+                };
+            }
+            
+            // Check off days
+            if (config['off days']) {
+                const offDays = config['off days'].toLowerCase().split(',').map(d => d.trim());
+                if (offDays.includes(currentDay)) {
+                    return { open: false, reason: `We're closed on ${currentDay.charAt(0).toUpperCase() + currentDay.slice(1)}days` };
+                }
+            }
+            
+            // Check holidays
+            if (config['holidays']) {
+                const holidays = config['holidays'].split(',').map(d => d.trim());
+                if (holidays.includes(currentDate) || holidays.includes(currentDateSlash)) {
+                    return { open: false, reason: "We're closed for the holiday today" };
+                }
+            }
+            
+            console.log('✓ Outlet is open');
+            return { open: true };
+        }
+
+        async function checkUserLocation() {
+            // Check if GPS verification is enabled
+            if (config['gps check'] && config['gps check'].toLowerCase() === 'no') {
+                console.log("GPS check disabled in config, skipping location verification");
+                return { allowed: true };
+            }
+            
+            if (!config.outletLocation || !config.deliveryRadius) {
+                console.log("No location config, skipping location check");
+                return { allowed: true };
+            }
+            
+            return new Promise((resolve) => {
+                if (!navigator.geolocation) {
+                    console.log("Geolocation not supported");
+                    resolve({ allowed: true });
+                    return;
+                }
+                
+                console.log("Requesting user location...");
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        userLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        
+                        console.log("User location:", userLocation);
+                        console.log("Outlet location:", config.outletLocation);
+                        
+                        const distance = calculateDistance(
+                            userLocation.lat,
+                            userLocation.lng,
+                            config.outletLocation.lat,
+                            config.outletLocation.lng
+                        );
+                        
+                        console.log("Distance:", distance.toFixed(2), "km");
+                        console.log("Delivery radius:", config.deliveryRadius, "km");
+                        
+                        if (distance > config.deliveryRadius) {
+                            resolve({ 
+                                allowed: false, 
+                                reason: `You are ${distance.toFixed(1)}km away. We deliver within ${config.deliveryRadius}km.` 
+                            });
+                        } else {
+                            resolve({ allowed: true });
+                        }
+                    },
+                    (error) => {
+                        console.log('Location access denied or unavailable:', error);
+                        if (config['gps check'] && config['gps check'].toLowerCase() === 'yes') {
+                            resolve({ 
+                                allowed: false, 
+                                reason: 'Location permission required. Please enable location access and refresh the page.' 
+                            });
+                        } else {
+                            resolve({ allowed: true });
+                        }
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    }
+                );
+            });
+        }
+
+        function showClosedOverlay(reason) {
+            const overlay = document.createElement('div');
+            overlay.id = 'closed-overlay';
+            overlay.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0, 0, 0, 0.9);
+                z-index: 9999;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                color: white;
+                text-align: center;
+                padding: 30px;
+                border-radius: 50%;
+                width: 200px;
+                height: 200px;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+                pointer-events: none;
+            `;
+            overlay.innerHTML = `
+                <div style="font-size: 3em; margin-bottom: 10px;">🔒</div>
+                <div style="font-size: 0.9em; font-weight: 600; line-height: 1.3;">${reason}</div>
+            `;
+            document.body.appendChild(overlay);
         }
 
         function calculateTotals() {
@@ -1109,12 +1951,17 @@
                 } else {
                     actionHtml = `<button class="add-button" data-item-name="${item.Name}">ADD</button>`;
                 }
+                
+                // Check if item has description
+                const hasDescription = item.description && item.description.trim() !== '';
+                const infoIconHtml = hasDescription ? `<button class="info-icon" data-item-name="${item.Name}" title="View description">i</button>` : '';
 
                 itemCard.innerHTML = `
                     <div class="item-details">
                         <div class="item-name">
                             <div class="attribute-icon ${getAttributeClass(item.Attributes)}"></div>
                             <span style="flex: 1;">${item.Name}</span>
+                            ${infoIconHtml}
                         </div>
                         <div class="item-price">₹${item.Price}</div>
                     </div>
@@ -1123,16 +1970,37 @@
                 itemListMain.appendChild(itemCard);
             });
             
+            // Add click handlers for ADD buttons
             itemListMain.querySelectorAll('.add-button').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const itemName = e.target.dataset.itemName;
                     const item = menuItems.find(i => i.Name === itemName);
-                    cart.push({ ...item, quantity: 1, selectedAddons: [], instructions: '', subtotal: item.Price });
-                    updateCartSummary();
-                    renderItems(activeCategory);
+                    
+                    // Check if item has add-ons
+                    if (item.Addon_Group_Name) {
+                        openCustomizationModal(item);
+                    } else {
+                        // Simple item without add-ons
+                        cart.push({ ...item, quantity: 1, selectedAddons: [], instructions: '', subtotal: item.Price });
+                        updateCartSummary();
+                        renderItems(activeCategory);
+                    }
+                });
+            });
+            
+            // Add click handlers for info buttons
+            itemListMain.querySelectorAll('.info-icon').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const itemName = e.target.dataset.itemName;
+                    const item = menuItems.find(i => i.Name === itemName);
+                    if (item) {
+                        showDescription(item);
+                    }
                 });
             });
 
+            // Add click handlers for quantity controls
             itemListMain.querySelectorAll('.decrease-item-qty, .increase-item-qty').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const isIncrease = e.target.classList.contains('increase-item-qty');
@@ -1158,6 +2026,219 @@
                     }
                 });
             });
+        }
+        
+        function isImageUrl(text) {
+            if (!text) return false;
+            text = text.trim();
+            const urlPattern = /^https?:\/\//i;
+            return urlPattern.test(text);
+        }
+
+        function getYouTubeEmbedUrl(url) {
+            let videoId = null;
+            
+            // Check for YouTube Shorts
+            const shortsRegExp = /youtube\.com\/shorts\/([^#&?]*)/;
+            const shortsMatch = url.match(shortsRegExp);
+            if (shortsMatch && shortsMatch[1]) {
+                videoId = shortsMatch[1];
+            }
+            
+            // Check for regular YouTube URLs
+            if (!videoId) {
+                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+                const match = url.match(regExp);
+                if (match && match[2] && match[2].length === 11) {
+                    videoId = match[2];
+                }
+            }
+            
+            if (videoId) {
+                return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+            }
+            
+            return null;
+        }
+
+        function showDescription(item) {
+            if (!item.description || item.description.trim() === '') return;
+            
+            const descriptionTitle = document.getElementById('description-title');
+            const descriptionContent = document.getElementById('description-content');
+            const descriptionModalOverlay = document.getElementById('description-modal-overlay');
+            
+            descriptionTitle.textContent = item.Name;
+            
+            const desc = item.description.trim();
+            console.log('Showing description for:', item.Name);
+            console.log('Description value:', desc);
+            
+            if (isImageUrl(desc)) {
+                const youtubeEmbedUrl = getYouTubeEmbedUrl(desc);
+                
+                if (youtubeEmbedUrl) {
+                    console.log('YouTube embed URL:', youtubeEmbedUrl);
+                    descriptionContent.innerHTML = `
+                        <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; background: #000;">
+                            <iframe src="${youtubeEmbedUrl}" 
+                                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen>
+                            </iframe>
+                        </div>
+                    `;
+                } else {
+                    const contentId = 'desc-content-' + Date.now();
+                    descriptionContent.innerHTML = `
+                        <img src="${desc}" 
+                             alt="${item.Name}" 
+                             id="${contentId}-img"
+                             style="width: 100%; display: block; margin: 0;" 
+                             onload="console.log('Image loaded successfully')"
+                             onerror="console.log('Image failed, trying iframe'); document.getElementById('${contentId}-img').style.display='none'; document.getElementById('${contentId}-iframe').style.display='block';">
+                        <iframe src="${desc}" 
+                                id="${contentId}-iframe"
+                                style="width: 100%; height: 70vh; border: none; display: none;"
+                                onload="console.log('Iframe loaded successfully')"
+                                onerror="console.log('Iframe failed, showing link'); document.getElementById('${contentId}-iframe').style.display='none'; document.getElementById('${contentId}-fallback').style.display='block';">
+                        </iframe>
+                        <div id="${contentId}-fallback" style="display: none; padding: 30px 20px; background: #f5f5f5; text-align: center;">
+                            <p style="margin-bottom: 20px; color: #666; font-size: 1em;">Content cannot be displayed in preview</p>
+                            <a href="${desc}" target="_blank" 
+                               style="display: inline-block; background: var(--primary-color); color: white; padding: 14px 28px; border-radius: 25px; text-decoration: none; font-weight: 600; font-size: 1em;">
+                                Open Link in New Tab →
+                            </a>
+                        </div>
+                    `;
+                }
+            } else {
+                descriptionContent.innerHTML = `<p style="line-height: 1.8; padding: 20px;">${desc}</p>`;
+            }
+            
+            descriptionModalOverlay.classList.add('visible');
+        }
+
+        function closeDescriptionModal() {
+            const descriptionModalOverlay = document.getElementById('description-modal-overlay');
+            const descriptionContent = document.getElementById('description-content');
+            descriptionModalOverlay.classList.remove('visible');
+            descriptionContent.innerHTML = '';
+        }
+        
+        function openCustomizationModal(item, cartIndex = null) {
+            currentItemForModal = item;
+            editingCartItemIndex = cartIndex;
+            const existingItem = (cartIndex !== null) ? cart[cartIndex] : null;
+            const relevantAddons = addons.filter(addon => addon.Addon_Group_Name === item.Addon_Group_Name);
+            
+            const addonGroups = {};
+            relevantAddons.forEach(addon => {
+                if (!addonGroups[addon.Addon_Group_Name]) {
+                    addonGroups[addon.Addon_Group_Name] = { 
+                        items: [], 
+                        type: addon.Addon_Item_Selection === 'S' ? 'radio' : 'checkbox', 
+                        name: addon.Addon_Group_Name.replace(/\s+/g, '-') 
+                    };
+                }
+                addonGroups[addon.Addon_Group_Name].items.push(addon);
+            });
+            
+            let addonHtml = '';
+            for (const groupName in addonGroups) {
+                const group = addonGroups[groupName];
+                addonHtml += `<div style="margin-bottom: 25px;"><h4 style="font-size: 1em; font-weight: 600; margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px; color: #333;">${groupName}</h4>`;
+                group.items.forEach(addon => {
+                    const isChecked = existingItem ? existingItem.selectedAddons.some(sa => sa.name === addon.Addon_Item_Name) : false;
+                    addonHtml += `
+                        <div style="display: flex; align-items: center; margin-bottom: 14px; padding: 10px; border-radius: 8px; transition: background 0.2s;">
+                            <input type="${group.type}" name="${group.name}" id="${addon.Addon_Item_Name}" value="${addon.Addon_Item_Price}" data-name="${addon.Addon_Item_Name}" ${isChecked ? 'checked' : ''} style="margin-right: 12px; min-width: 20px; min-height: 20px; cursor: pointer;">
+                            <label for="${addon.Addon_Item_Name}" style="flex-grow: 1; font-size: 0.95em; cursor: pointer; line-height: 1.4;">${addon.Addon_Item_Name}</label>
+                            <span style="font-weight: 600; color: var(--primary-color); font-size: 0.95em;">+ ₹${addon.Addon_Item_Price}</span>
+                        </div>
+                    `;
+                });
+                addonHtml += `</div>`;
+            }
+            
+            const custModalContent = document.getElementById('customization-modal-content');
+            custModalContent.innerHTML = `
+                <div class="modal-header">
+                    <div style="font-size: 1.2em; font-weight: 700;">${item.Name}</div>
+                    <span class="close-btn" id="close-cust-modal">&times;</span>
+                </div>
+                <div class="modal-body">
+                    ${addonHtml}
+                    <textarea id="special-instructions" placeholder="Special instructions..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1.5px solid var(--border-color); margin-top: 10px; resize: vertical; min-height: 80px; font-size: 0.95em; font-family: 'Roboto', sans-serif;">${existingItem ? existingItem.instructions : ''}</textarea>
+                </div>
+                <div style="padding: 15px 20px; border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; background: #fff; position: sticky; bottom: 0;">
+                    <div style="display: flex; align-items: center; background: var(--secondary-color); border-radius: 25px; padding: 4px;">
+                        <button class="quantity-btn" id="decrease-qty" style="background: white; border: none; min-width: 40px; min-height: 40px; font-size: 1.3em; cursor: pointer; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary-color); font-weight: 700;">-</button>
+                        <span id="quantity-display" style="padding: 0 20px; font-weight: 700; font-size: 1.1em; min-width: 50px; text-align: center;">${existingItem ? existingItem.quantity : 1}</span>
+                        <button class="quantity-btn" id="increase-qty" style="background: white; border: none; min-width: 40px; min-height: 40px; font-size: 1.3em; cursor: pointer; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary-color); font-weight: 700;">+</button>
+                    </div>
+                    <button id="add-to-cart-btn" style="background: var(--primary-color); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-weight: 700; cursor: pointer; font-size: 1em; min-height: 48px;">${editingCartItemIndex !== null ? 'Update Item' : 'Add Item'}</button>
+                </div>
+            `;
+            
+            document.getElementById('customization-modal-overlay').classList.add('visible');
+            updateModalPrice();
+            
+            document.getElementById('decrease-qty').addEventListener('click', () => updateQuantity(-1));
+            document.getElementById('increase-qty').addEventListener('click', () => updateQuantity(1));
+            document.getElementById('add-to-cart-btn').addEventListener('click', saveItemToCart);
+            document.getElementById('close-cust-modal').addEventListener('click', closeCustomizationModal);
+            custModalContent.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
+                input.addEventListener('change', updateModalPrice);
+            });
+        }
+        
+        function updateModalPrice() {
+            const custModalContent = document.getElementById('customization-modal-content');
+            let addonPrice = Array.from(custModalContent.querySelectorAll('input:checked')).reduce((sum, input) => sum + parseFloat(input.value), 0);
+            const quantity = parseInt(document.getElementById('quantity-display').textContent);
+            const totalItemPrice = (currentItemForModal.Price + addonPrice) * quantity;
+            document.getElementById('add-to-cart-btn').textContent = `${editingCartItemIndex !== null ? 'Update' : 'Add'} Item - ₹${totalItemPrice.toFixed(2)}`;
+        }
+
+        function updateQuantity(change) {
+            const qtyDisplay = document.getElementById('quantity-display');
+            let currentQty = parseInt(qtyDisplay.textContent) + change;
+            if (currentQty < 1) currentQty = 1;
+            qtyDisplay.textContent = currentQty;
+            updateModalPrice();
+        }
+
+        function closeCustomizationModal() {
+            document.getElementById('customization-modal-overlay').classList.remove('visible');
+            document.getElementById('customization-modal-content').innerHTML = '';
+            currentItemForModal = null;
+            editingCartItemIndex = null;
+        }
+        
+        function saveItemToCart() {
+            const custModalContent = document.getElementById('customization-modal-content');
+            const selectedAddons = Array.from(custModalContent.querySelectorAll('input:checked')).map(input => ({ 
+                name: input.dataset.name, 
+                price: parseFloat(input.value) 
+            }));
+            const quantity = parseInt(document.getElementById('quantity-display').textContent);
+            const instructions = document.getElementById('special-instructions').value;
+            const basePrice = currentItemForModal.Price;
+            const addonsTotalPrice = selectedAddons.reduce((sum, addon) => sum + addon.price, 0);
+            const itemSubtotal = (basePrice + addonsTotalPrice) * quantity;
+            const cartItem = { ...currentItemForModal, selectedAddons, quantity, instructions, subtotal: itemSubtotal };
+            
+            if (editingCartItemIndex !== null) {
+                cart[editingCartItemIndex] = cartItem;
+            } else {
+                cart.push(cartItem);
+            }
+            
+            updateCartSummary();
+            renderItems(activeCategory);
+            closeCustomizationModal();
         }
 
         function renderCartModal() {
@@ -1197,6 +2278,8 @@
                     ${instructionsHtml}
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
                         <div>
+                            ${item.selectedAddons && item.selectedAddons.length > 0 || item.instructions ? 
+                                `<button class="cart-edit-btn" data-cart-index="${index}" style="color: #5bc0de; border-color: #5bc0de; font-size: 0.85em; padding: 8px 14px; border: 1.5px solid; border-radius: 20px; cursor: pointer; background: white; font-weight: 600; margin-right: 8px;">Edit</button>` : ''}
                             <button class="cart-remove-btn" data-cart-index="${index}" style="color: #d9534f; border-color: #d9534f; font-size: 0.85em; padding: 8px 14px; border: 1.5px solid; border-radius: 20px; cursor: pointer; background: white; font-weight: 600;">Remove</button>
                         </div>
                         <div style="font-weight: 700; font-size: 1em; color: var(--primary-color);">₹${item.subtotal.toFixed(2)}</div>
@@ -1213,6 +2296,15 @@
                 <div class="totals-row"><span>GST (${gstPercent}%)</span><span>₹${gst.toFixed(2)}</span></div>
                 <div class="totals-row grand-total"><span>Grand Total</span><span>₹${grandTotal.toFixed(2)}</span></div>
             `;
+            
+            // Add edit button handlers
+            cartModalBody.querySelectorAll('.cart-edit-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const cartIndex = parseInt(e.target.dataset.cartIndex);
+                    document.getElementById('cart-modal-overlay').classList.remove('visible');
+                    openCustomizationModal(cart[cartIndex], cartIndex);
+                });
+            });
             
             cartModalBody.querySelectorAll('.cart-remove-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
@@ -1300,7 +2392,7 @@
             });
         }
 
-        // Initialize app
+        // Initialize device ID and load data
         async function initApp() {
             deviceId = getDeviceId();
             console.log('✓ Device ID:', deviceId);
@@ -1312,6 +2404,26 @@
             config = await fetchConfig();
             console.log('✓ Config loaded');
             
+            // Check outlet status but don't block UI
+            const statusCheck = checkOutletStatus();
+            console.log("Status check result:", statusCheck);
+            
+            if (!statusCheck.open) {
+                outletOpen = false;
+                outletClosedReason = statusCheck.reason;
+                showClosedOverlay(statusCheck.reason);
+            }
+            
+            // Check user location but don't block UI
+            const locationCheck = await checkUserLocation();
+            console.log("Location check result:", locationCheck);
+            
+            if (!locationCheck.allowed) {
+                outletOpen = false;
+                outletClosedReason = locationCheck.reason;
+                showClosedOverlay(locationCheck.reason);
+            }
+            
             console.log('Loading discount codes...');
             discountCodes = await fetchDiscountCodes();
             console.log('✓ Discount codes loaded');
@@ -1319,6 +2431,10 @@
             console.log('Loading menu items...');
             menuItems = await fetchAndParseCSV(MENU_CSV_URL);
             console.log('✓ Menu items loaded:', menuItems.length);
+            
+            console.log('Loading add-ons...');
+            addons = await fetchAndParseCSV(ADDONS_CSV_URL);
+            console.log('✓ Add-ons loaded:', addons.length);
             
             // Update brand name in header
             document.getElementById('brand-name').textContent = brandName;
@@ -1336,7 +2452,11 @@
             // Get user location
             await getUserLocation();
             
-            // Start order status refresh
+            // Request notification permission
+            requestNotificationPermission();
+            
+            // IMPORTANT: Only start order status refresh AFTER device ID is confirmed
+            console.log('✓ App initialized, starting order status refresh...');
             startOrderStatusRefresh();
             
             console.log('✓ App initialized successfully');
