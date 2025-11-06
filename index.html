@@ -269,6 +269,9 @@
             padding: 15px 20px;
             border-bottom: 2px solid #eee;
             flex-shrink: 0;
+            background: white;
+            z-index: 300;
+            position: relative;
         }
         
         .description-title {
@@ -278,13 +281,30 @@
         }
         
         .description-close {
-            background: none;
+            background: #f44336;
             border: none;
             font-size: 1.5em;
-            color: #888;
+            color: white;
             cursor: pointer;
-            min-width: 30px;
-            min-height: 30px;
+            min-width: 40px;
+            min-height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            z-index: 300;
+            position: relative;
+            transition: all 0.2s;
+        }
+        
+        .description-close:active {
+            transform: scale(0.9);
+            background: #d32f2f;
+        }
+        
+        .description-close:hover {
+            background: #d32f2f;
         }
         
         .description-content {
@@ -1553,6 +1573,40 @@
                 document.getElementById('my-orders-modal').classList.remove('visible');
             }
         });
+        
+        // Description modal handlers
+        const descriptionCloseBtn = document.getElementById('description-close');
+        const descriptionOverlay = document.getElementById('description-modal-overlay');
+        
+        // Multiple event listeners for better reliability
+        descriptionCloseBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Close button clicked');
+            closeDescriptionModal();
+        });
+        
+        descriptionCloseBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Close button touched');
+            closeDescriptionModal();
+        });
+        
+        descriptionOverlay.addEventListener('click', (e) => {
+            if (e.target === descriptionOverlay) {
+                console.log('Overlay clicked');
+                closeDescriptionModal();
+            }
+        });
+        
+        descriptionOverlay.addEventListener('touchend', (e) => {
+            if (e.target === descriptionOverlay) {
+                e.preventDefault();
+                console.log('Overlay touched');
+                closeDescriptionModal();
+            }
+        });
 
         // CSV Parsing
         async function fetchAndParseCSV(url) {
@@ -2124,7 +2178,10 @@
             const descriptionModalOverlay = document.getElementById('description-modal-overlay');
             const descriptionContent = document.getElementById('description-content');
             descriptionModalOverlay.classList.remove('visible');
-            descriptionContent.innerHTML = '';
+            // Stop any playing videos by clearing content
+            setTimeout(() => {
+                descriptionContent.innerHTML = '';
+            }, 300);
         }
         
         function openCustomizationModal(item, cartIndex = null) {
