@@ -964,20 +964,54 @@
             const modal = document.getElementById('my-orders-modal');
             const ordersList = document.getElementById('orders-list');
             
-            // Show modal with loading state
+            // Show modal with loading state immediately
             modal.classList.add('visible');
-            ordersList.innerHTML = '<div style="text-align: center; padding: 60px 20px;"><div style="font-size: 3em; margin-bottom: 15px;">⏳</div><p style="color: #999; font-size: 1em;">Loading your orders...</p></div>';
+            ordersList.innerHTML = '<div style="text-align: center; padding: 60px 20px;"><div style="font-size: 3em; margin-bottom: 15px; animation: spin 1s linear infinite;">⏳</div><p style="color: #999; font-size: 1em; font-weight: 600;">Loading your orders...</p><p style="color: #999; font-size: 0.85em; margin-top: 10px;">Please wait</p></div>';
+            
+            // Add spinner animation
+            const style = document.createElement('style');
+            style.textContent = '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }';
+            if (!document.querySelector('#spinner-style')) {
+                style.id = 'spinner-style';
+                document.head.appendChild(style);
+            }
             
             try {
-                // Wait for the API call to complete
-                const orders = await checkOrderStatus();
+                // Force a fresh API call - don't use cached data
+                console.log('🔄 Fetching fresh orders for My Orders modal...');
+                
+                const response = await fetch(`${APPS_SCRIPT_URL}?action=checkOrderStatus&deviceId=${deviceId}&t=${Date.now()}`, {
+                    method: 'GET',
+                    cache: 'no-cache',
+                    headers: {
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Fresh order status response:', data);
+                
+                if (data.status !== 'success') {
+                    throw new Error(data.message || 'Failed to fetch orders');
+                }
+                
+                const orders = data.orders || [];
+                console.log(`✓ Received ${orders.length} fresh orders`);
+                
+                // Update badge with fresh data
+                updateOrdersBadge(orders);
                 
                 // Clear the loading state
                 ordersList.innerHTML = '';
                 
                 // Check if we actually got orders
-                if (!orders || orders.length === 0) {
-                    ordersList.innerHTML = '<div style="text-align: center; padding: 60px 20px;"><div style="font-size: 3em; margin-bottom: 15px;">📋</div><p style="color: #999; font-size: 1em;">No orders yet</p><p style="color: #999; font-size: 0.85em; margin-top: 10px;">Your order history will appear here</p></div>';
+                if (orders.length === 0) {
+                    ordersList.innerHTML = '<div style="text-align: center; padding: 60px 20px;"><div style="font-size: 3em; margin-bottom: 15px;">📋</div><p style="color: #999; font-size: 1em; font-weight: 600;">No orders yet</p><p style="color: #999; font-size: 0.85em; margin-top: 10px;">Your order history will appear here</p></div>';
                     return;
                 }
                 
@@ -987,7 +1021,6 @@
                     orderCard.className = 'order-status-card';
                     orderCard.dataset.orderId = order.orderId;
                     orderCard.style.cursor = 'pointer';
-                    orderCard.setAttribute('onclick', `console.log('Inline click works for ${order.orderId}')`);
                     
                     const statusClass = order.status.toLowerCase();
                     const statusEmoji = {
@@ -1021,13 +1054,12 @@
                         </div>
                     `;
                     
-                    // Add click handler only to header and details section, not the expanded area
+                    // Add click handler only to header and details section
                     const headerSection = orderCard.querySelector('.order-status-header');
                     const detailsSection = orderCard.querySelector('.order-details');
                     
                     const clickHandler = function(e) {
                         e.stopPropagation();
-                        console.log('Order clicked:', order.orderId);
                         toggleOrderDetails(order.orderId);
                     };
                     
@@ -1047,11 +1079,11 @@
                     ordersList.appendChild(orderCard);
                 });
                 
-                console.log(`✓ Displayed ${orders.length} orders`);
+                console.log(`✓ Successfully displayed ${orders.length} orders`);
                 
             } catch (error) {
                 console.error('Error loading orders:', error);
-                ordersList.innerHTML = '<div style="text-align: center; padding: 60px 20px;"><div style="font-size: 3em; margin-bottom: 15px;">⚠️</div><p style="color: #d9534f; font-size: 1em;">Error loading orders</p><p style="color: #999; font-size: 0.85em; margin-top: 10px;">Please try again</p></div>';
+                ordersList.innerHTML = '<div style="text-align: center; padding: 60px 20px;"><div style="font-size: 3em; margin-bottom: 15px;">⚠️</div><p style="color: #d9534f; font-size: 1em; font-weight: 600;">Error loading orders</p><p style="color: #999; font-size: 0.85em; margin-top: 10px;">Please try again</p><button onclick="location.reload()" style="margin-top: 20px; padding: 12px 24px; background: var(--primary-color); color: white; border: none; border-radius: 25px; font-weight: 600; cursor: pointer;">Refresh Page</button></div>';
             }
         }
         
