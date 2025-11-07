@@ -980,14 +980,8 @@
                 // Force a fresh API call - don't use cached data
                 console.log('🔄 Fetching fresh orders for My Orders modal...');
                 
-                const response = await fetch(`${APPS_SCRIPT_URL}?action=checkOrderStatus&deviceId=${deviceId}&t=${Date.now()}`, {
-                    method: 'GET',
-                    cache: 'no-cache',
-                    headers: {
-                        'Cache-Control': 'no-cache, no-store, must-revalidate',
-                        'Pragma': 'no-cache'
-                    }
-                });
+                // Simple fetch without custom headers to avoid CORS preflight
+                const response = await fetch(`${APPS_SCRIPT_URL}?action=checkOrderStatus&deviceId=${deviceId}&_=${Date.now()}`);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
